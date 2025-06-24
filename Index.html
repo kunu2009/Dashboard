@@ -1,3042 +1,747 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>7K Life</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>7K Life Productivity App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Roboto Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <style>
-    /* Global CSS Settings */
+    /* General styles and CSS variables */
     :root {
-      --bg-color: #F0F0F0;
-      --text-color: #202020;
-      --card-bg: #FFFFFF;
-      --border-color: #B0B0B0;
-      --primary-color: #007BFF;
-      --secondary-text-color: #8A8A8A;
-      --dark-mode-bg: #202020;
-      --dark-mode-text: #F0F0F0;
-      --dark-mode-card-bg: #2A2A2A;
-      --dark-mode-border: #444444;
-      --dark-mode-primary: #339AFF;
+      --bg-color: #f9f9f9;
+      --text-color: #333;
+      --accent-color: #4CAF50;
+      --header-height: 50px;
+      --nav-width: 200px;
     }
-
-    [data-theme="dark"] {
-      --bg-color: var(--dark-mode-bg);
-      --text-color: var(--dark-mode-text);
-      --card-bg: var(--dark-mode-card-bg);
-      --border-color: var(--dark-mode-border);
-      --primary-color: var(--dark-mode-primary);
-      --secondary-text-color: #B0B0B0; /* Adjust for dark mode readability */
+    .dark-mode {
+      --bg-color: #2b2b2b;
+      --text-color: #f2f2f2;
+      --accent-color: #81C784;
     }
-
-    * {
-      box-sizing: border-box;
+    html, body {
       margin: 0;
       padding: 0;
-    }
-
-    body, html {
-      height: 100%;
-      width: 100%;
-      background-color: var(--bg-color);
       font-family: 'Roboto', sans-serif;
+      background-color: var(--bg-color);
       color: var(--text-color);
-      overflow-x: hidden;
-      transition: background-color 0.3s, color 0.3s;
+      height: 100%;
     }
-
-    /* Scrollbar styling (WebKit browsers) */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background-color: var(--border-color);
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--bg-color);
-    }
-
-    /* Typography */
-    h1, h2, h3 {
-      font-weight: 700;
-      color: var(--text-color);
-    }
-    h1 { font-size: 2rem; }
-    h2 { font-size: 1.5rem; }
-    h3 { font-size: 1.25rem; }
-    p, span, label, input, textarea {
-      font-weight: 400;
-      font-size: 1rem;
-      color: var(--text-color);
-    }
-    input::placeholder, textarea::placeholder {
-      color: var(--secondary-text-color);
-      font-style: italic;
-    }
-    .small-text {
-      font-size: 0.875rem;
-      color: var(--secondary-text-color);
-    }
-    .code-block {
-      font-family: 'Courier New', monospace;
-      background-color: #e9e9e9; /* Light grey for code background */
-      padding: 5px;
-      border-radius: 4px;
-    }
-    [data-theme="dark"] .code-block {
-      background-color: #333333;
-      color: #F0F0F0;
-    }
-
-    /* Header Bar */
-    .header {
+    /* Header styles */
+    header {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 60px;
-      background-color: var(--card-bg);
-      border-bottom: 1px solid var(--border-color);
+      right: 0;
+      height: var(--header-height);
+      background-color: var(--accent-color);
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
+      padding: 0 1rem;
       z-index: 1000;
-      transition: background-color 0.3s, border-color 0.3s;
     }
-    .hamburger-icon, .ai-icon {
+    header .menu-btn {
       font-size: 1.5rem;
       cursor: pointer;
-      color: var(--text-color);
-      transition: transform 0.3s ease, color 0.2s;
     }
-    .hamburger-icon.open {
-      transform: rotate(90deg);
+    header h1 {
+      font-size: 1.2rem;
+      margin: 0;
     }
-    .app-logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--primary-color);
-      cursor: pointer;
-    }
-
-    /* Sidebar */
-    #sidebar {
+    /* Sidebar navigation styles */
+    nav {
       position: fixed;
-      top: 60px;
+      top: var(--header-height);
       left: 0;
-      width: 250px;
-      height: calc(100% - 60px);
-      background-color: var(--card-bg);
-      border-right: 1px solid var(--border-color);
+      bottom: 0;
+      width: var(--nav-width);
+      background-color: #fff;
+      border-right: 1px solid #ccc;
+      transform: translateX(0);
+      transition: transform 0.3s ease;
       overflow-y: auto;
-      transition: transform 0.3s ease, background-color 0.3s, border-color 0.3s;
-      z-index: 999;
     }
-    body:not(.sidebar-open) #sidebar {
+    nav.hide {
       transform: translateX(-100%);
     }
-    @media (min-width: 1024px) {
-      #sidebar {
-        transform: translateX(0);
-      }
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
     }
-
-    .nav-list {
+    nav ul li {
+      margin: 0;
+    }
+    nav ul li a {
+      display: block;
+      padding: 1rem;
+      color: var(--text-color);
+      text-decoration: none;
+      border-bottom: 1px solid #eee;
+    }
+    nav ul li a:hover {
+      background-color: #f0f0f0;
+    }
+    /* Main content styles */
+    main {
+      margin-top: var(--header-height);
+      margin-left: var(--nav-width);
+      padding: 1rem;
+      transition: margin-left 0.3s ease;
+    }
+    nav.hide + main {
+      margin-left: 0;
+    }
+    /* Section styles (hidden by default) */
+    section {
+      display: none;
+    }
+    section.active {
+      display: block;
+    }
+    /* To-Do List styles */
+    .todo-input {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .todo-input input[type="text"] {
+      flex: 1;
+      padding: 0.5rem;
+    }
+    .todo-input button {
+      padding: 0.5rem 1rem;
+      background-color: var(--accent-color);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    .todo-list {
       list-style: none;
       padding: 0;
     }
-    .nav-item {
+    .todo-item {
       display: flex;
-      align-items: center;
-      padding: 15px 20px;
-      cursor: pointer;
-      transition: background-color 0.2s, color 0.2s;
-    }
-    .nav-item .icon {
-      font-size: 1.25rem;
-      margin-right: 12px;
-      color: var(--text-color);
-    }
-    .nav-item .label {
-      font-size: 1rem;
-      color: var(--text-color);
-    }
-    .nav-item:hover {
-      background-color: var(--bg-color); /* Light grey hover */
-    }
-    .nav-item:hover .icon,
-    .nav-item:hover .label {
-      color: var(--primary-color);
-    }
-    .nav-item.active {
-      background-color: var(--primary-color);
-      border-top-right-radius: 8px;
-      border-bottom-right-radius: 8px;
-    }
-    .nav-item.active .label,
-    .nav-item.active .icon {
-      color: #FFFFFF;
-    }
-    [data-theme="dark"] .nav-item:hover .icon,
-    [data-theme="dark"] .nav-item:hover .label {
-      color: var(--primary-color);
-    }
-
-    /* Main Content Area */
-    #main-content {
-      margin-left: 0;
-      padding: 20px;
-      background-color: var(--bg-color);
-      min-height: calc(100vh - 60px); /* Adjust for header */
-      transition: margin-left 0.3s ease, background-color 0.3s;
-    }
-    @media (min-width: 1024px) {
-      #main-content {
-        margin-left: 250px;
-      }
-    }
-    .app-section {
-      display: none;
-    }
-    .app-section.active {
-      display: block;
-    }
-
-    /* Footer */
-    .footer {
-      height: 40px;
-      background-color: var(--card-bg);
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--secondary-text-color);
-      font-size: 0.875rem;
-      transition: background-color 0.3s, border-color 0.3s, color 0.3s;
-    }
-
-    /* Global UI Components */
-    .card {
-      background-color: var(--card-bg);
-      border-radius: 8px;
-      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-      padding: 20px;
-      margin-bottom: 20px;
-      transition: box-shadow 0.2s, transform 0.2s, background-color 0.3s;
-    }
-    .card:hover {
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .btn-primary {
-      background-color: var(--primary-color);
-      color: #FFFFFF;
-      border: none;
-      border-radius: 6px;
-      padding: 10px 20px;
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
-    }
-    .btn-primary:hover {
-      background-color: var(--dark-mode-primary);
-      transform: scale(1.02);
-    }
-
-    .btn-secondary {
-      background-color: transparent;
-      color: var(--primary-color);
-      border: 2px solid var(--primary-color);
-      border-radius: 6px;
-      padding: 8px 18px;
-      cursor: pointer;
-      transition: background-color 0.2s, color 0.2s, transform 0.1s;
-    }
-    .btn-secondary:hover {
-      background-color: var(--primary-color);
-      color: #FFFFFF;
-      transform: scale(1.02);
-    }
-
-    .btn-red-outline {
-      background-color: transparent;
-      color: #FF0000;
-      border: 2px solid #FF0000;
-      border-radius: 6px;
-      padding: 8px 18px;
-      cursor: pointer;
-      transition: background-color 0.2s, color 0.2s, transform 0.1s;
-    }
-    .btn-red-outline:hover {
-      background-color: #FF0000;
-      color: #FFFFFF;
-      transform: scale(1.02);
-    }
-
-    input[type="text"], input[type="email"], input[type="password"],
-    input[type="date"], input[type="time"], input[type="number"],
-    textarea, select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid var(--border-color);
+      justify-content: space-between;
+      background-color: #fff;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
       border-radius: 4px;
-      background-color: var(--card-bg);
-      color: var(--text-color);
-      transition: border-color 0.2s, background-color 0.3s;
-    }
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-    }
-
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
       align-items: center;
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.2s ease, visibility 0.2s ease;
     }
-    .modal-overlay.open {
-      opacity: 1;
-      visibility: visible;
+    .todo-item.done {
+      text-decoration: line-through;
+      opacity: 0.6;
     }
-    .modal-content {
-      background-color: var(--card-bg);
-      border-radius: 8px;
-      padding: 30px;
-      max-width: 500px;
-      width: 90%;
-      transform: scale(0.9);
-      transition: transform 0.2s ease, background-color 0.3s;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    /* Habit tracker styles */
+    .habit-list {
+      list-style: none;
+      padding: 0;
     }
-    .modal-overlay.open .modal-content {
-      transform: scale(1);
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-    }
-    .error-message {
-      color: #FF0000;
-      font-size: 0.875rem;
-      margin-top: -10px;
-      margin-bottom: 10px;
-      display: block;
-    }
-
-    /* Toast Notification */
-    .toast-notification {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: rgba(0, 0, 0, 0.8);
-      color: #FFFFFF;
-      padding: 10px 15px;
-      border-radius: 4px;
-      z-index: 2000;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-    }
-    .toast-notification.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(-10px);
-    }
-    .toast-notification.toast-success { border-left: 5px solid #28a745; }
-    .toast-notification.toast-error { border-left: 5px solid #dc3545; }
-
-    /* Spinner */
-    .spinner {
-      border: 4px solid var(--bg-color);
-      border-top: 4px solid var(--primary-color);
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      display: inline-block;
-      vertical-align: middle;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* AI Chat Panel */
-    #aiChatPanel {
-      position: fixed;
-      top: 60px;
-      right: 0;
-      width: 350px; /* Desktop width */
-      height: calc(100% - 60px);
-      background-color: var(--card-bg);
-      box-shadow: -5px 0 10px rgba(0,0,0,0.1);
-      z-index: 1001;
-      transform: translateX(100%);
-      transition: transform 0.3s ease, background-color 0.3s;
-      display: flex;
-      flex-direction: column;
-    }
-    #aiChatPanel.open {
-      transform: translateX(0);
-    }
-    @media (max-width: 767px) {
-      #aiChatPanel {
-        width: 100%; /* Full width on mobile */
-      }
-    }
-    .ai-chat-header {
-      padding: 15px 20px;
-      border-bottom: 1px solid var(--border-color);
+    .habit-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background-color: #fff;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      border-radius: 4px;
     }
-    .ai-chat-header h3 {
+    /* Journal styles */
+    .journal-container {
+      display: flex;
+      flex-direction: column;
+    }
+    .journal-container textarea {
+      resize: vertical;
+      min-height: 100px;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .journal-entries {
+      list-style: none;
+      padding: 0;
       margin: 0;
     }
-    .ai-chat-close {
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--text-color);
+    .journal-entry {
+      background-color: #fff;
+      padding: 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
     }
-    .ai-chat-window {
-      flex-grow: 1;
-      padding: 10px;
-      overflow-y: auto;
+    /* Notepad styles */
+    .notepad-container {
       display: flex;
       flex-direction: column;
-      gap: 10px;
     }
-    .chat-message {
-      max-width: 80%;
-      padding: 10px 15px;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      word-wrap: break-word;
+    .notepad-container textarea {
+      resize: vertical;
+      min-height: 100px;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
     }
-    .chat-message.user {
-      background-color: var(--primary-color);
-      color: #FFFFFF;
-      align-self: flex-end;
-      border-bottom-right-radius: 0;
+    /* Study Hub styles */
+    .quiz-container {
+      background-color: #fff;
+      padding: 0.5rem;
+      border-radius: 4px;
     }
-    .chat-message.ai {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      align-self: flex-start;
-      border-bottom-left-radius: 0;
+    .quiz-question {
+      margin-bottom: 0.5rem;
     }
-    [data-theme="dark"] .chat-message.ai {
-      background-color: var(--dark-mode-border);
-      color: var(--dark-mode-text);
+    .quiz-options {
+      list-style: none;
+      padding: 0;
     }
-    .chat-message .timestamp {
-      font-size: 0.75rem;
-      color: var(--secondary-text-color);
-      margin-top: 5px;
-      display: block;
+    .quiz-options li {
+      margin-bottom: 0.5rem;
     }
-    .ai-chat-input-area {
-      padding: 15px;
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .ai-chat-input-area input {
-      flex-grow: 1;
-      margin-bottom: 0;
-      border-radius: 20px;
-      padding: 10px 15px;
-    }
-    .ai-chat-input-area .send-button {
-      background-color: var(--primary-color);
-      color: #FFFFFF;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      font-size: 1.2rem;
-      transition: background-color 0.2s;
-    }
-    .ai-chat-input-area .send-button:hover {
-      background-color: var(--dark-mode-primary);
-    }
-    .ai-typing-indicator {
-      font-size: 0.9rem;
-      color: var(--secondary-text-color);
-      margin-left: 10px;
-    }
-
-    /* Specific Section Styles (e.g., Dashboard, To-Do) */
-    /* Dashboard */
-    .dashboard-grid {
-        display: grid;
-        gap: 20px;
-        grid-template-columns: 1fr; /* Single column on mobile */
-    }
-    @media (min-width: 768px) {
-        .dashboard-grid {
-            grid-template-columns: repeat(2, 1fr); /* Two columns on desktop */
-        }
-    }
-    .quick-stats-bar {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-    .quick-stat-card {
-        text-align: center;
-        padding: 15px;
-        cursor: pointer;
-    }
-    .quick-stat-card .value {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin-top: 5px;
-    }
-    .quick-access-buttons {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 15px;
-    }
-    .quick-access-btn {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 15px;
-        border: 1px solid var(--primary-color);
-        border-radius: 8px;
-        background-color: var(--card-bg);
-        cursor: pointer;
-        transition: background-color 0.2s, color 0.2s;
-    }
-    .quick-access-btn:hover {
-        background-color: var(--primary-color);
-        color: #FFFFFF;
-    }
-    .quick-access-btn:hover .icon, .quick-access-btn:hover .label {
-      color: #FFFFFF;
-    }
-    .quick-access-btn .icon {
-        font-size: 2rem;
-        margin-bottom: 5px;
-        color: var(--primary-color);
-        transition: color 0.2s;
-    }
-    .quick-access-btn .label {
-      font-weight: 500;
-      color: var(--text-color);
-      transition: color 0.2s;
-    }
-    /* To-Do List */
-    .task-list-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .filter-sort-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .task-card {
-      display: flex;
-      align-items: center;
-      padding: 15px;
-      border-bottom: 1px solid var(--border-color);
-      transition: background-color 0.2s;
-      cursor: pointer;
-    }
-    .task-card:hover {
-      background-color: var(--bg-color);
-    }
-    .task-card.overdue {
-      border: 1px solid #FF0000;
-    }
-    .task-card.overdue .task-title {
-      color: #FF0000;
-    }
-    .task-card input[type="checkbox"] {
-      margin-right: 15px;
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-    }
-    .task-details {
-      flex-grow: 1;
-    }
-    .task-title {
-      font-weight: 700;
-      margin-bottom: 5px;
-    }
-    .task-due-date {
-      margin-left: auto;
-      font-size: 0.9rem;
-      color: var(--secondary-text-color);
-    }
-    .priority-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      margin-left: 10px;
-      margin-right: 10px;
-    }
-    .priority-dot.high { background-color: #FF0000; }
-    .priority-dot.medium { background-color: #FFA500; }
-    .priority-dot.low { background-color: #008000; }
-    .task-actions {
-      display: flex;
-      gap: 10px;
-      margin-left: 15px;
-    }
-    .task-actions .icon {
-      cursor: pointer;
-      color: var(--secondary-text-color);
-      transition: color 0.2s;
-    }
-    .task-actions .icon:hover {
-      color: var(--primary-color);
-    }
-
-    /* Habit Tracker */
-    .habit-card {
-      padding: 15px;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 15px;
-    }
-    .habit-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .habit-streak {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--primary-color);
-      margin-right: 10px;
-    }
-    .mini-calendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 2px;
-      margin-top: 10px;
-    }
-    .calendar-day {
-      width: 20px;
-      height: 20px;
-      background-color: var(--bg-color);
-      border: 1px solid var(--border-color);
-      border-radius: 3px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 0.75rem;
-    }
-    .calendar-day.completed {
-      background-color: var(--primary-color);
-      color: #FFFFFF;
-    }
-    .calendar-day.missed {
-      background-color: #B0B0B0;
-      color: #FFFFFF;
-    }
-    /* Journal */
-    .journal-layout {
-      display: flex;
-      gap: 20px;
-    }
-    .journal-list {
-      flex: 0 0 30%;
-      max-height: calc(100vh - 200px); /* Adjust as needed */
-      overflow-y: auto;
-      border-right: 1px solid var(--border-color);
-      padding-right: 10px;
-    }
-    .journal-entry-preview {
-      padding: 10px;
-      cursor: pointer;
-      border-bottom: 1px solid var(--bg-color);
-    }
-    .journal-entry-preview:hover {
-      background-color: var(--bg-color);
-    }
-    .journal-content-display {
-      flex-grow: 1;
-      padding-left: 10px;
-    }
-    .journal-editor-panel {
+    /* AI Assistant panel styles */
+    #ai-panel {
       position: fixed;
-      top: 60px;
+      top: var(--header-height);
       right: 0;
-      width: 100%;
-      height: calc(100% - 60px);
-      background-color: var(--card-bg);
-      z-index: 1002;
+      width: 300px;
+      bottom: 0;
+      background-color: #fff;
+      border-left: 1px solid #ccc;
+      padding: 1rem;
       transform: translateX(100%);
       transition: transform 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
       overflow-y: auto;
     }
-    .journal-editor-panel.open {
+    #ai-panel.active {
       transform: translateX(0);
     }
-    .rich-text-editor {
-      border: 1px solid var(--border-color);
-      min-height: 200px;
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 15px;
-      outline: none;
+    #ai-panel h2 {
+      margin-top: 0;
     }
-    .rich-text-toolbar button {
-      background-color: var(--bg-color);
-      border: 1px solid var(--border-color);
-      padding: 8px 12px;
-      margin-right: 5px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.2s, color 0.2s;
-    }
-    .rich-text-toolbar button:hover {
-      background-color: var(--primary-color);
-      color: #FFFFFF;
-    }
-    /* Notepad */
-    #notepadContent {
+    #ai-panel textarea {
       width: 100%;
-      min-height: 400px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 15px;
-      background-color: var(--card-bg);
-      color: var(--text-color);
-      resize: vertical;
+      min-height: 100px;
     }
-    .notepad-controls {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 15px;
+    /* Modal example (hidden by default) */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 80%;
+      max-width: 400px;
+      background: #fff;
+      transform: translate(-50%, -50%);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      padding: 1rem;
+      z-index: 2000;
     }
-    .auto-save-toggle {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-      font-size: 0.9rem;
+    .modal.active {
+      display: block;
     }
-    .auto-save-toggle input[type="checkbox"] {
-      margin-right: 5px;
-    }
-    .saved-indicator {
-      color: green;
-      margin-left: 5px;
-      font-weight: 500;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .saved-indicator.show {
-      opacity: 1;
-    }
-
-    /* Study Hub */
-    .study-tabs {
-      display: flex;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 20px;
-    }
-    .study-tab-btn {
-      padding: 10px 15px;
-      cursor: pointer;
-      border: none;
-      background: none;
-      font-size: 1.1rem;
-      color: var(--secondary-text-color);
-      border-bottom: 3px solid transparent;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .study-tab-btn.active {
-      color: var(--primary-color);
-      border-bottom-color: var(--primary-color);
-    }
-    .accordion-item {
-      margin-bottom: 10px;
-      background-color: var(--card-bg);
-      border-radius: 4px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .accordion-header {
-      padding: 15px;
-      cursor: pointer;
+    .modal .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-weight: 700;
     }
-    .accordion-content {
-      padding: 0 15px 15px 15px;
-      display: none;
+    .modal .modal-header h3 {
+      margin: 0;
     }
-    .accordion-content ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    .quiz-question-options label {
-      display: block;
-      padding: 10px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      margin-bottom: 8px;
+    .modal .close-btn {
       cursor: pointer;
-      transition: border-color 0.2s, background-color 0.2s;
-    }
-    .quiz-question-options label:hover {
-      border-color: var(--primary-color);
-      background-color: var(--bg-color);
-    }
-    .quiz-timer {
       font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--primary-color);
-      text-align: right;
     }
-    .quiz-timer.critical {
-      color: #FF0000;
+    /* Settings styles */
+    .settings-container {
+      display: flex;
+      flex-direction: column;
     }
-
-    /* Settings */
-    .settings-section-title {
-      margin-top: 30px;
-      margin-bottom: 15px;
-      font-weight: 700;
-      color: var(--primary-color);
+    .settings-item {
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .color-scheme-options label {
-      display: inline-block;
-      margin-right: 15px;
+    .settings-item label {
+      margin-right: 1rem;
+    }
+    /* Export/Import buttons */
+    .export-btn, .import-btn {
+      padding: 0.5rem 1rem;
+      margin-right: 0.5rem;
+      background-color: var(--accent-color);
+      color: #fff;
+      border: none;
       cursor: pointer;
     }
-    .color-box {
-      width: 25px;
-      height: 25px;
-      border: 1px solid var(--border-color);
-      border-radius: 3px;
-      display: inline-block;
-      vertical-align: middle;
-      margin-right: 5px;
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      nav {
+        transform: translateX(-100%);
+      }
+      nav.hide {
+        transform: translateX(-100%);
+      }
+      nav.show {
+        transform: translateX(0);
+      }
+      main {
+        margin-left: 0;
+      }
+    }
+    /* Accessibility focus */
+    a:focus, button:focus, input:focus {
+      outline: 2px solid var(--accent-color);
+      outline-offset: 2px;
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="hamburger-icon" aria-label="Open sidebar">☰</div>
-    <div class="app-logo" aria-label="Go to Dashboard">7K Life</div>
-    <div class="ai-icon" aria-label="Open AI Assistant">🤖</div>
-  </div>
-
-  <aside id="sidebar">
-    <nav>
-      <ul class="nav-list">
-        <li data-target="dashboardSection" class="nav-item active" aria-label="Dashboard">
-          <span class="icon">🏠</span>
-          <span class="label">Dashboard</span>
-        </li>
-        <li data-target="todoSection" class="nav-item" aria-label="To-Do List">
-          <span class="icon">✅</span>
-          <span class="label">To-Do List</span>
-        </li>
-        <li data-target="habitSection" class="nav-item" aria-label="Habit Tracker">
-          <span class="icon">🏋️</span>
-          <span class="label">Habit Tracker</span>
-        </li>
-        <li data-target="journalSection" class="nav-item" aria-label="Journal">
-          <span class="icon">📓</span>
-          <span class="label">Journal</span>
-        </li>
-        <li data-target="notepadSection" class="nav-item" aria-label="Notepad">
-          <span class="icon">📝</span>
-          <span class="label">Notepad</span>
-        </li>
-        <li data-target="studySection" class="nav-item" aria-label="Study Hub">
-          <span class="icon">📚</span>
-          <span class="label">Study Hub</span>
-        </li>
-        <li data-target="settingsSection" class="nav-item" aria-label="Settings">
-          <span class="icon">⚙️</span>
-          <span class="label">Settings</span>
-        </li>
-      </ul>
-    </nav>
-  </aside>
-
-  <main id="main-content">
-    <section id="dashboardSection" class="app-section active">
+  <!-- Header and Top Nav -->
+  <header>
+    <span class="menu-btn" onclick="toggleNav()">&#9776;</span>
+    <h1>7K Life</h1>
+    <div>
+      <button onclick="toggleAI()">AI Assistant</button>
+      <button id="themeToggle">Toggle Theme</button>
+    </div>
+  </header>
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar">
+    <ul>
+      <li><a href="#" data-section="dashboard">Dashboard</a></li>
+      <li><a href="#" data-section="todo">To-Do List</a></li>
+      <li><a href="#" data-section="habits">Habit Tracker</a></li>
+      <li><a href="#" data-section="journal">Journal</a></li>
+      <li><a href="#" data-section="notepad">Notepad</a></li>
+      <li><a href="#" data-section="study">Study Hub</a></li>
+      <li><a href="#" data-section="settings">Settings</a></li>
+    </ul>
+  </nav>
+  <!-- Main Content Area -->
+  <main>
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="active">
       <h2>Dashboard</h2>
-      <div class="quick-stats-bar">
-        <div class="card quick-stat-card" data-target="todoSection">
-          <span class="small-text">Tasks Pending</span>
-          <div class="value" id="dashboard-tasks-pending">0</div>
-        </div>
-        <div class="card quick-stat-card" data-target="habitSection">
-          <span class="small-text">Habits Today</span>
-          <div class="value" id="dashboard-habits-today">0/0</div>
-        </div>
-        <div class="card quick-stat-card" data-target="journalSection">
-          <span class="small-text">Journal Entries</span>
-          <div class="value" id="dashboard-journal-entries">0</div>
-        </div>
-        <div class="card quick-stat-card" data-target="studySection">
-          <span class="small-text">Study Progress</span>
-          <div class="value" id="dashboard-study-progress">0%</div>
-        </div>
-      </div>
-
-      <div class="dashboard-grid">
-        <div class="card">
-          <h3>Recent To-Dos</h3>
-          <ul id="dashboard-recent-todos">
-            <li>No recent tasks.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Habit Streak Preview</h3>
-          <div id="dashboard-habit-streak-chart">
-            No habit data.
-          </div>
-        </div>
-        <div class="card">
-          <h3>Journal Snapshot</h3>
-          <div id="dashboard-journal-snapshot">
-            No journal entries.
-          </div>
-          <button class="btn-primary" onclick="navigateToSection('journalSection')" style="margin-top: 10px;">View More</button>
-        </div>
-        <div class="card">
-          <h3>Quick Access</h3>
-          <div class="quick-access-buttons">
-            <button class="quick-access-btn" onclick="openAddTaskModal()">
-              <span class="icon">➕</span><span class="label">New Task</span>
-            </button>
-            <button class="quick-access-btn" onclick="openAddHabitModal()">
-              <span class="icon">✨</span><span class="label">New Habit</span>
-            </button>
-            <button class="quick-access-btn" onclick="openJournalEditor()">
-              <span class="icon">✍️</span><span class="label">New Entry</span>
-            </button>
-            <button class="quick-access-btn" onclick="navigateToSection('studySection')">
-              <span class="icon">🧠</span><span class="label">Daily Quiz</span>
-            </button>
-          </div>
-        </div>
+      <p>Welcome to 7K Life Dashboard. Here you see an overview of your tasks and habits.</p>
+      <div>
+        <p><strong>To-Do Items:</strong> <span id="dashboardTodoCount">0</span></p>
+        <p><strong>Habits:</strong> <span id="dashboardHabitCount">0</span></p>
       </div>
     </section>
-
-    <section id="todoSection" class="app-section">
-      <div class="task-list-header">
-        <h2>To-Do List</h2>
-        <button class="btn-primary" onclick="openAddTaskModal()">Add Task</button>
+    <!-- To-Do List Section -->
+    <section id="todo">
+      <h2>To-Do List</h2>
+      <div class="todo-input">
+        <input type="text" id="newTodo" placeholder="Enter new task">
+        <button onclick="addTodo()">Add</button>
       </div>
-      <div class="filter-sort-row">
-        <span>Filter by Status:</span>
-        <button class="btn-secondary" data-filter="all">All</button>
-        <button class="btn-secondary" data-filter="pending">Pending</button>
-        <button class="btn-secondary" data-filter="completed">Completed</button>
-        <span>Sort by:</span>
-        <select id="todo-sort-by">
-          <option value="dueDate">Due Date</option>
-          <option value="priority">Priority</option>
-          <option value="createdDate">Created Date</option>
-        </select>
-      </div>
-      <ul id="todo-list">
-        <li>No tasks yet. Add one!</li>
-      </ul>
-
-      <div id="taskModal" class="modal-overlay">
-        <div class="modal-content">
-          <h3><span id="taskModalTitle">Add New Task</span></h3>
-          <form id="taskForm">
-            <div class="form-group">
-              <label for="taskTitle">Title</label>
-              <input type="text" id="taskTitle" placeholder="Enter task title..." required>
-              <span class="error-message" id="taskTitleError"></span>
-            </div>
-            <div class="form-group">
-              <label for="taskDescription">Description</label>
-              <textarea id="taskDescription" placeholder="Describe your task..."></textarea>
-            </div>
-            <div class="form-group">
-              <label for="taskDueDate">Due Date</label>
-              <input type="date" id="taskDueDate">
-            </div>
-            <div class="form-group">
-              <label for="taskPriority">Priority</label>
-              <select id="taskPriority">
-                <option value="Low">Low</option>
-                <option value="Medium" selected>Medium</option>
-                <option value="High">High</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="taskTags">Tags (comma-separated)</label>
-              <input type="text" id="taskTags" placeholder="e.g., study, urgent">
-            </div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-              <button type="button" class="btn-secondary" onclick="closeTaskModal()">Cancel</button>
-              <button type="submit" class="btn-primary">Save Task</button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <ul class="todo-list" id="todoList"></ul>
     </section>
-
-    <section id="habitSection" class="app-section">
-      <div class="task-list-header">
-        <h2>Habit Tracker</h2>
-        <button class="btn-primary" onclick="openAddHabitModal()">Add Habit</button>
+    <!-- Habit Tracker Section -->
+    <section id="habits">
+      <h2>Habit Tracker</h2>
+      <div class="habit-input">
+        <input type="text" id="newHabit" placeholder="Enter new habit">
+        <button onclick="addHabit()">Add</button>
       </div>
-      <ul id="habit-list">
-        <li>No habits yet. Add one!</li>
-      </ul>
-
-      <div id="habitModal" class="modal-overlay">
-        <div class="modal-content">
-          <h3><span id="habitModalTitle">Add New Habit</span></h3>
-          <form id="habitForm">
-            <div class="form-group">
-              <label for="habitTitle">Title</label>
-              <input type="text" id="habitTitle" placeholder="e.g., Read 30 minutes" required>
-              <span class="error-message" id="habitTitleError"></span>
-            </div>
-            <div class="form-group">
-              <label>Frequency</label>
-              <div>
-                <input type="radio" id="freqDaily" name="habitFrequency" value="Daily" checked>
-                <label for="freqDaily">Daily</label>
-                <input type="radio" id="freqWeekly" name="habitFrequency" value="Weekly">
-                <label for="freqWeekly">Weekly</label>
-              </div>
-              <div id="weekly-days" style="display: none; margin-top: 5px;">
-                <label><input type="checkbox" name="weeklyDay" value="Mon"> Mon</label>
-                <label><input type="checkbox" name="weeklyDay" value="Tue"> Tue</label>
-                <label><input type="checkbox" name="weeklyDay" value="Wed"> Wed</label>
-                <label><input type="checkbox" name="weeklyDay" value="Thu"> Thu</label>
-                <label><input type="checkbox" name="weeklyDay" value="Fri"> Fri</label>
-                <label><input type="checkbox" name="weeklyDay" value="Sat"> Sat</label>
-                <label><input type="checkbox" name="weeklyDay" value="Sun"> Sun</label>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="habitReminderTime">Reminder Time</label>
-              <input type="time" id="habitReminderTime">
-            </div>
-            <div class="form-group">
-              <label for="habitStartDate">Start Date</label>
-              <input type="date" id="habitStartDate">
-            </div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-              <button type="button" class="btn-secondary" onclick="closeHabitModal()">Cancel</button>
-              <button type="submit" class="btn-primary">Save Habit</button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <ul class="habit-list" id="habitList"></ul>
     </section>
-
-    <section id="journalSection" class="app-section">
-      <div class="task-list-header">
-        <h2>Journal</h2>
-        <button class="btn-primary" onclick="openJournalEditor()">New Entry</button>
+    <!-- Journal Section -->
+    <section id="journal">
+      <h2>Journal</h2>
+      <div class="journal-container">
+        <textarea id="journalEntry" placeholder="Write your journal entry here..."></textarea>
+        <button onclick="saveJournal()">Save Entry</button>
       </div>
-      <div class="journal-layout">
-        <div class="card journal-list">
-          <input type="text" id="journalSearch" placeholder="Search journal entries...">
-          <ul id="journal-entries-list">
-            <li>No journal entries.</li>
-          </ul>
-        </div>
-        <div class="card journal-content-display" id="journal-reader-display">
-          <h3>Select an entry to read.</h3>
-          <div id="selected-journal-content"></div>
-        </div>
-      </div>
-
-      <div id="journalEditorPanel" class="journal-editor-panel">
-        <div class="ai-chat-header">
-          <h3 id="journalEditorTitle">New Journal Entry</h3>
-          <span class="ai-chat-close" onclick="closeJournalEditor()">×</span>
-        </div>
-        <div style="flex-grow: 1; padding: 10px 0; overflow-y: auto;">
-          <input type="text" id="journalEntryTitle" placeholder="Entry Title" style="margin-bottom: 10px;">
-          <div class="rich-text-toolbar" style="margin-bottom: 10px;">
-            <button onclick="document.execCommand('bold', false, null)"><b>B</b></button>
-            <button onclick="document.execCommand('italic', false, null)"><i>I</i></button>
-            <button onclick="document.execCommand('underline', false, null)"><u>U</u></button>
-            <button onclick="document.execCommand('insertUnorderedList', false, null)">• List</button>
-            <button onclick="document.execCommand('insertOrderedList', false, null)">1. List</button>
-            <button onclick="document.execCommand('formatBlock', false, 'blockquote')">‟ Quote</button>
-          </div>
-          <div id="journalEntryContent" class="rich-text-editor" contenteditable="true" placeholder="Start writing..."></div>
-          <div style="margin-top: 10px;">
-            <label for="journalEntryTags">Tags (comma-separated)</label>
-            <input type="text" id="journalEntryTags" placeholder="e.g., reflection, personal">
-          </div>
-          <div style="margin-top: 10px;">
-            <label for="journalEntryMood">Mood</label>
-            <select id="journalEntryMood">
-              <option value="">Select Mood</option>
-              <option value="Happy">😊 Happy</option>
-              <option value="Sad">😢 Sad</option>
-              <option value="Neutral">😐 Neutral</option>
-              <option value="Excited">🤩 Excited</option>
-              <option value="Calm">😌 Calm</option>
-            </select>
-          </div>
-          <p class="small-text" style="margin-top: 10px;" id="journal-word-read-count"></p>
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 15px; border-top: 1px solid var(--border-color);">
-          <button type="button" class="btn-secondary" onclick="closeJournalEditor()">Cancel</button>
-          <button type="button" class="btn-primary" onclick="saveJournalEntry()">Save Entry</button>
-        </div>
-      </div>
+      <ul class="journal-entries" id="journalList"></ul>
     </section>
-
-    <section id="notepadSection" class="app-section">
+    <!-- Notepad Section -->
+    <section id="notepad">
       <h2>Notepad</h2>
-      <textarea id="notepadContent" placeholder="Start typing your notes here..."></textarea>
-      <div class="notepad-controls">
-        <span class="small-text" id="notepad-word-count">Word count: 0</span>
-        <label class="auto-save-toggle">
-          <input type="checkbox" id="autoSaveToggle" checked> Auto-save: <span id="autoSaveStatus">ON</span>
-          <span class="saved-indicator" id="savedIndicator">Saved!</span>
-        </label>
-        <button class="btn-primary" onclick="saveNotepad()">Save Note</button>
-        <button class="btn-red-outline" onclick="clearNotepad()">Clear All</button>
-        <button class="btn-secondary" onclick="exportNotepad()">Export</button>
+      <div class="notepad-container">
+        <textarea id="noteContent" placeholder="Type your notes here..."></textarea>
+        <button onclick="saveNote()">Save Note</button>
       </div>
+      <div id="notesListContainer"></div>
     </section>
-
-    <section id="studySection" class="app-section">
+    <!-- Study Hub Section -->
+    <section id="study">
       <h2>Study Hub</h2>
-      <div class="study-tabs">
-        <button class="study-tab-btn active" data-exam="CLAT">CLAT Material</button>
-        <button class="study-tab-btn" data-exam="MHCET">MHCET Material</button>
+      <p>CLAT/MHCET Material and Quizzes</p>
+      <!-- Quiz Example -->
+      <div class="quiz-container">
+        <div class="quiz-question" id="quizQuestion"></div>
+        <ul class="quiz-options" id="quizOptions"></ul>
+        <button onclick="submitQuiz()">Submit Quiz</button>
+        <div id="quizResult"></div>
       </div>
-
-      <div id="clatMaterial" class="study-content-tab active">
-        <div class="study-tabs" style="margin-bottom: 10px;">
-          <button class="study-tab-btn active" data-subtab="courseCLAT">Course Outline</button>
-          <button class="study-tab-btn" data-subtab="quizzesCLAT">Quizzes</button>
-        </div>
-        <div id="courseCLAT" class="study-subtab-content active">
-          <h3>Course Outline - CLAT</h3>
-          <div id="clat-course-outline">
-            </div>
-        </div>
-        <div id="quizzesCLAT" class="study-subtab-content" style="display: none;">
-          <h3>Quizzes - CLAT</h3>
-          <div id="clat-quiz-dashboard">
-            <div class="form-group">
-                <label for="clatQuizTopic">Select Topic</label>
-                <select id="clatQuizTopic">
-                    <option value="all">All Topics</option>
-                    </select>
-            </div>
-            <div class="form-group">
-                <label>Difficulty</label>
-                <div>
-                    <input type="checkbox" id="clatDiffEasy" value="Easy"> <label for="clatDiffEasy">Easy</label>
-                    <input type="checkbox" id="clatDiffMedium" value="Medium"> <label for="clatDiffMedium">Medium</label>
-                    <input type="checkbox" id="clatDiffHard" value="Hard"> <label for="clatDiffHard">Hard</label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="clatNumQuestions">Number of Questions (5-50)</label>
-                <input type="number" id="clatNumQuestions" min="5" max="50" value="10">
-            </div>
-            <button class="btn-primary" onclick="startQuiz('CLAT')">Start Quiz</button>
-          </div>
-
-          <div id="clat-quiz-interface" style="display: none;">
-              <p>Question <span id="currentQuestionNum">1</span> of <span id="totalQuestions">10</span></p>
-              <div class="quiz-timer" id="quizTimer">00:00</div>
-              <h3 id="quizQuestionText" style="margin-top: 15px;"></h3>
-              <div id="quizOptions" class="quiz-question-options" style="margin-top: 15px;">
-                  </div>
-              <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                  <button class="btn-secondary" id="prevQuestionBtn" style="display: none;">Previous</button>
-                  <button class="btn-primary" id="nextQuestionBtn">Next</button>
-              </div>
-          </div>
-          <div id="clat-quiz-results" style="display: none;">
-              <h3>Quiz Results</h3>
-              <p>Score: <span id="quizScore"></span></p>
-              <p>Time Taken: <span id="quizTimeTaken"></span></p>
-              <h4>Your Answers</h4>
-              <ul id="quizResultsList">
-                  </ul>
-              <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-                  <button class="btn-primary" onclick="retryQuiz('CLAT')">Retry Quiz</button>
-                  <button class="btn-secondary" onclick="downloadQuizScorecard('CLAT')">Download Scorecard</button>
-                  <button class="btn-secondary" onclick="backToQuizDashboard('CLAT')">Back to Dashboard</button>
-              </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="mhcetMaterial" class="study-content-tab" style="display: none;">
-        <div class="study-tabs" style="margin-bottom: 10px;">
-          <button class="study-tab-btn active" data-subtab="courseMHCET">Course Outline</button>
-          <button class="study-tab-btn" data-subtab="quizzesMHCET">Quizzes</button>
-        </div>
-        <div id="courseMHCET" class="study-subtab-content active">
-          <h3>Course Outline - MHCET</h3>
-          <div id="mhcet-course-outline">
-            </div>
-        </div>
-        <div id="quizzesMHCET" class="study-subtab-content" style="display: none;">
-          <h3>Quizzes - MHCET</h3>
-          <div id="mhcet-quiz-dashboard">
-            <div class="form-group">
-                <label for="mhcetQuizTopic">Select Topic</label>
-                <select id="mhcetQuizTopic">
-                    <option value="all">All Topics</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Difficulty</label>
-                <div>
-                    <input type="checkbox" id="mhcetDiffEasy" value="Easy"> <label for="mhcetDiffEasy">Easy</label>
-                    <input type="checkbox" id="mhcetDiffMedium" value="Medium"> <label for="mhcetDiffMedium">Medium</label>
-                    <input type="checkbox" id="mhcetDiffHard" value="Hard"> <label for="mhcetDiffHard">Hard</label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="mhcetNumQuestions">Number of Questions (5-50)</label>
-                <input type="number" id="mhcetNumQuestions" min="5" max="50" value="10">
-            </div>
-            <button class="btn-primary" onclick="startQuiz('MHCET')">Start Quiz</button>
-          </div>
-          <div id="mhcet-quiz-interface" style="display: none;">
-            <p>Question <span id="currentQuestionNumMHCET">1</span> of <span id="totalQuestionsMHCET">10</span></p>
-            <div class="quiz-timer" id="quizTimerMHCET">00:00</div>
-            <h3 id="quizQuestionTextMHCET" style="margin-top: 15px;"></h3>
-            <div id="quizOptionsMHCET" class="quiz-question-options" style="margin-top: 15px;">
-                </div>
-            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                <button class="btn-secondary" id="prevQuestionBtnMHCET" style="display: none;">Previous</button>
-                <button class="btn-primary" id="nextQuestionBtnMHCET">Next</button>
-            </div>
-          </div>
-          <div id="mhcet-quiz-results" style="display: none;">
-            <h3>Quiz Results</h3>
-            <p>Score: <span id="quizScoreMHCET"></span></p>
-            <p>Time Taken: <span id="quizTimeTakenMHCET"></span></p>
-            <h4>Your Answers</h4>
-            <ul id="quizResultsListMHCET">
-                </ul>
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-                <button class="btn-primary" onclick="retryQuiz('MHCET')">Retry Quiz</button>
-                <button class="btn-secondary" onclick="downloadQuizScorecard('MHCET')">Download Scorecard</button>
-                <button class="btn-secondary" onclick="backToQuizDashboard('MHCET')">Back to Dashboard</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Quiz Control Buttons -->
+      <button onclick="nextQuizQuestion()">Next Question</button>
     </section>
-
-    <section id="settingsSection" class="app-section">
+    <!-- Settings Section -->
+    <section id="settings">
       <h2>Settings</h2>
-      <div class="card">
-        <h3 class="settings-section-title">Profile & Preferences</h3>
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" placeholder="Your Name">
+      <div class="settings-container">
+        <div class="settings-item">
+          <label for="themeSwitch">Dark Mode:</label>
+          <input type="checkbox" id="themeSwitch">
         </div>
-        <div class="form-group">
-          <label for="themeSelect">Preferred Theme</label>
-          <select id="themeSelect">
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="fontSizeSelect">Preferred Font Size</label>
-          <select id="fontSizeSelect">
-            <option value="small">Small</option>
-            <option value="medium">Medium</option>
-            <option value="large">Large</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3 class="settings-section-title">Notifications</h3>
-        <div class="form-group">
-          <label><input type="checkbox" id="todoRemindersToggle"> To-Do Reminders</label>
-        </div>
-        <div class="form-group">
-          <label><input type="checkbox" id="habitRemindersToggle"> Habit Reminders</label>
-        </div>
-        <div class="form-group">
-          <label><input type="checkbox" id="quizRemindersToggle"> Quiz Reminders</label>
-        </div>
-        <div class="form-group">
-          <label for="timezoneSelect">Timezone</label>
-          <select id="timezoneSelect">
-            </select>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3 class="settings-section-title">Data & Privacy</h3>
-        <button class="btn-red-outline" onclick="clearAllData()">Clear All Data</button>
-        <button class="btn-primary" onclick="exportAllData()">Export All Data</button>
-        <div style="margin-top: 15px;">
-            <label for="importDataInput" class="btn-secondary" style="cursor: pointer; display: inline-block;">Import Data</label>
-            <input type="file" id="importDataInput" accept=".json" style="display: none;">
-        </div>
-      </div>
-
-      <div class="card">
-        <h3 class="settings-section-title">AI Settings</h3>
-        <div class="form-group">
-          <label for="aiApiKey">API Key</label>
-          <input type="password" id="aiApiKey" placeholder="Your Gemini API Key">
-          <button type="button" onclick="toggleApiKeyVisibility()" style="margin-left: 5px;">Show</button>
-        </div>
-        <div class="form-group">
-          <label for="aiModelSelect">Model</label>
-          <select id="aiModelSelect">
-            <option value="gemini-pro">Gemini Pro</option>
-            </select>
+        <div class="settings-item">
+          <button class="export-btn" onclick="exportData()">Export Data</button>
+          <input type="file" id="importFile" style="display:none" accept=".json">
+          <button class="import-btn" onclick="document.getElementById('importFile').click()">Import Data</button>
         </div>
       </div>
     </section>
   </main>
-
-  <div id="aiChatPanel">
-    <div class="ai-chat-header">
-      <h3>AI Assistant</h3>
-      <span class="ai-chat-close" aria-label="Close AI Assistant" onclick="closeAIChat()">×</span>
-    </div>
-    <div class="ai-chat-window" id="aiChatWindow">
-      <div class="chat-message ai">
-        <p>Hello! How can I assist you today?</p>
-        <span class="timestamp">Just now</span>
-      </div>
-    </div>
-    <div class="ai-chat-input-area">
-      <input type="text" id="aiInput" placeholder="Ask me anything..." />
-      <button class="send-button" aria-label="Send message" onclick="sendAIChatMessage()">➤</button>
-    </div>
-  </div>
-
-  <div class="footer">
-    © 2025 7K Life – All rights reserved.
-  </div>
-
-  <div id="toastNotification" class="toast-notification"></div>
-
+  <!-- AI Assistant Side Panel -->
+  <aside id="ai-panel">
+    <h2>AI Assistant</h2>
+    <textarea id="aiInput" placeholder="Ask a question or type a prompt..."></textarea>
+    <button onclick="processAI()">Ask</button>
+    <div id="aiResponse"></div>
+  </aside>
+  <!-- JavaScript Section -->
   <script>
-    // ============================
-    // Global Constants and State Management
-    // ============================
-    const GEMINI_API_KEY = 'AIzaSyAkom_AkwohBhh9YTp066DpFxjtokobUy4'; // WARNING: For production, use a backend proxy.
-
-    let state = {
-      todos: [],
-      habits: [],
-      journalEntries: [],
-      notepadContent: '',
-      studyQuestions: {},
-      quizHistory: [],
-      settings: {
-        theme: 'light',
-        apiKey: '',
-        aiModel: 'gemini-pro',
-        username: '',
-        fontSize: 'medium',
-        notifications: {
-          todo: true,
-          habit: true,
-          quiz: true
-        },
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
-      },
-      currentQuiz: {
-        exam: '',
-        topic: '',
-        questions: [],
-        currentIndex: 0,
-        userAnswers: [],
-        startTime: null,
-        timerInterval: null
-      }
-    };
-
-    // DOM Elements
-    const elements = {
-      sidebar: document.getElementById('sidebar'),
-      mainContent: document.getElementById('main-content'),
-      hamburgerIcon: document.querySelector('.hamburger-icon'),
-      aiIcon: document.querySelector('.ai-icon'),
-      aiChatPanel: document.getElementById('aiChatPanel'),
-      aiChatWindow: document.getElementById('aiChatWindow'),
-      aiInput: document.getElementById('aiInput'),
-      toastNotification: document.getElementById('toastNotification'),
-      // Sections
-      dashboardSection: document.getElementById('dashboardSection'),
-      todoSection: document.getElementById('todoSection'),
-      habitSection: document.getElementById('habitSection'),
-      journalSection: document.getElementById('journalSection'),
-      notepadSection: document.getElementById('notepadSection'),
-      studySection: document.getElementById('studySection'),
-      settingsSection: document.getElementById('settingsSection'),
-      // To-Do
-      todoList: document.getElementById('todo-list'),
-      taskModal: document.getElementById('taskModal'),
-      taskForm: document.getElementById('taskForm'),
-      taskTitle: document.getElementById('taskTitle'),
-      taskDescription: document.getElementById('taskDescription'),
-      taskDueDate: document.getElementById('taskDueDate'),
-      taskPriority: document.getElementById('taskPriority'),
-      taskTags: document.getElementById('taskTags'),
-      taskModalTitle: document.getElementById('taskModalTitle'),
-      taskTitleError: document.getElementById('taskTitleError'),
-      // Habit
-      habitList: document.getElementById('habit-list'),
-      habitModal: document.getElementById('habitModal'),
-      habitForm: document.getElementById('habitForm'),
-      habitTitle: document.getElementById('habitTitle'),
-      habitModalTitle: document.getElementById('habitModalTitle'),
-      habitTitleError: document.getElementById('habitTitleError'),
-      freqDaily: document.getElementById('freqDaily'),
-      freqWeekly: document.getElementById('freqWeekly'),
-      weeklyDays: document.getElementById('weekly-days'),
-      habitReminderTime: document.getElementById('habitReminderTime'),
-      habitStartDate: document.getElementById('habitStartDate'),
-      // Journal
-      journalEditorPanel: document.getElementById('journalEditorPanel'),
-      journalEntryTitle: document.getElementById('journalEntryTitle'),
-      journalEntryContent: document.getElementById('journalEntryContent'),
-      journalEntryTags: document.getElementById('journalEntryTags'),
-      journalEntryMood: document.getElementById('journalEntryMood'),
-      journalEntriesList: document.getElementById('journal-entries-list'),
-      journalReaderDisplay: document.getElementById('journal-reader-display'),
-      selectedJournalContent: document.getElementById('selected-journal-content'),
-      journalWordReadCount: document.getElementById('journal-word-read-count'),
-      journalSearch: document.getElementById('journalSearch'),
-      // Notepad
-      notepadContent: document.getElementById('notepadContent'),
-      autoSaveToggle: document.getElementById('autoSaveToggle'),
-      autoSaveStatus: document.getElementById('autoSaveStatus'),
-      savedIndicator: document.getElementById('savedIndicator'),
-      notepadWordCount: document.getElementById('notepad-word-count'),
-      // Study
-      studyTabButtons: document.querySelectorAll('.study-tab-btn[data-exam]'),
-      studySubtabButtons: document.querySelectorAll('.study-tab-btn[data-subtab]'),
-      clatMaterial: document.getElementById('clatMaterial'),
-      mhcetMaterial: document.getElementById('mhcetMaterial'),
-      clatCourseOutline: document.getElementById('clat-course-outline'),
-      mhcetCourseOutline: document.getElementById('mhcet-course-outline'),
-      clatQuizDashboard: document.getElementById('clat-quiz-dashboard'),
-      clatQuizInterface: document.getElementById('clat-quiz-interface'),
-      clatQuizResults: document.getElementById('clat-quiz-results'),
-      mhcetQuizDashboard: document.getElementById('mhcet-quiz-dashboard'),
-      mhcetQuizInterface: document.getElementById('mhcet-quiz-interface'),
-      mhcetQuizResults: document.getElementById('mhcet-quiz-results'),
-      currentQuestionNum: document.getElementById('currentQuestionNum'),
-      totalQuestions: document.getElementById('totalQuestions'),
-      quizTimer: document.getElementById('quizTimer'),
-      quizQuestionText: document.getElementById('quizQuestionText'),
-      quizOptions: document.getElementById('quizOptions'),
-      nextQuestionBtn: document.getElementById('nextQuestionBtn'),
-      prevQuestionBtn: document.getElementById('prevQuestionBtn'),
-      quizScore: document.getElementById('quizScore'),
-      quizTimeTaken: document.getElementById('quizTimeTaken'),
-      quizResultsList: document.getElementById('quizResultsList'),
-      clatQuizTopic: document.getElementById('clatQuizTopic'),
-      clatNumQuestions: document.getElementById('clatNumQuestions'),
-      clatDiffEasy: document.getElementById('clatDiffEasy'),
-      clatDiffMedium: document.getElementById('clatDiffMedium'),
-      clatDiffHard: document.getElementById('clatDiffHard'),
-      // Settings
-      usernameInput: document.getElementById('username'),
-      themeSelect: document.getElementById('themeSelect'),
-      fontSizeSelect: document.getElementById('fontSizeSelect'),
-      todoRemindersToggle: document.getElementById('todoRemindersToggle'),
-      habitRemindersToggle: document.getElementById('habitRemindersToggle'),
-      quizRemindersToggle: document.getElementById('quizRemindersToggle'),
-      timezoneSelect: document.getElementById('timezoneSelect'),
-      aiApiKeyInput: document.getElementById('aiApiKey'),
-      aiModelSelect: document.getElementById('aiModelSelect'),
-      importDataInput: document.getElementById('importDataInput')
-    };
-
-    const LOCAL_STORAGE_KEYS = {
-      TODOS: '7k_todo_tasks',
-      HABITS: '7k_habits',
-      JOURNAL: '7k_journal_entries',
-      NOTEPAD: '7k_notepad_content',
-      STUDY_QUESTIONS: '7k_study_questions',
-      QUIZ_HISTORY: '7k_quiz_history',
-      SETTINGS: '7k_settings',
-      JOURNAL_DRAFT: '7k_journal_draft'
-    };
-
-    // ============================
-    // Utility Functions
-    // ============================
-
-    function showToast(message, type = 'success') {
-      elements.toastNotification.textContent = message;
-      elements.toastNotification.className = `toast-notification show toast-${type}`;
-      setTimeout(() => {
-        elements.toastNotification.classList.remove('show');
-      }, 3000);
-    }
-
-    function saveState() {
-      localStorage.setItem(LOCAL_STORAGE_KEYS.TODOS, JSON.stringify(state.todos));
-      localStorage.setItem(LOCAL_STORAGE_KEYS.HABITS, JSON.stringify(state.habits));
-      localStorage.setItem(LOCAL_STORAGE_KEYS.JOURNAL, JSON.stringify(state.journalEntries));
-      localStorage.setItem(LOCAL_STORAGE_KEYS.NOTEPAD, state.notepadContent);
-      localStorage.setItem(LOCAL_STORAGE_KEYS.STUDY_QUESTIONS, JSON.stringify(state.studyQuestions));
-      localStorage.setItem(LOCAL_STORAGE_KEYS.QUIZ_HISTORY, JSON.stringify(state.quizHistory));
-      localStorage.setItem(LOCAL_STORAGE_KEYS.SETTINGS, JSON.stringify(state.settings));
-    }
-
-    function loadState() {
-      state.todos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEYS.TODOS)) || [];
-      state.habits = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEYS.HABITS)) || [];
-      state.journalEntries = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEYS.JOURNAL)) || [];
-      state.notepadContent = localStorage.getItem(LOCAL_STORAGE_KEYS.NOTEPAD) || '';
-      state.studyQuestions = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEYS.STUDY_QUESTIONS)) || {};
-      state.quizHistory = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEYS.QUIZ_HISTORY)) || [];
-      state.settings = { ...state.settings, ...JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEYS.SETTINGS)) };
-
-      // Apply theme and font size on load
-      applyTheme(state.settings.theme);
-      applyFontSize(state.settings.fontSize);
-    }
-
-    function applyTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      elements.themeSelect.value = theme;
-    }
-
-    function applyFontSize(size) {
-      document.body.style.fontSize = size === 'small' ? '0.9rem' : (size === 'large' ? '1.1rem' : '1rem');
-      elements.fontSizeSelect.value = size;
-    }
-
-    // Debounce function for performance
-    function debounce(func, delay) {
-      let timeout;
-      return function(...args) {
-        const context = this;
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(context, args), delay);
-      };
-    }
-
-    // ============================
-    // Header & Sidebar Navigation
-    // ============================
-
-    function initNavigation() {
-      elements.hamburgerIcon.addEventListener('click', () => {
-        document.body.classList.toggle('sidebar-open');
-        elements.hamburgerIcon.classList.toggle('open');
+    // Show/hide sections
+    function showSection(sectionId) {
+      document.querySelectorAll('main section').forEach(sec => {
+        sec.classList.remove('active');
       });
-
-      document.querySelector('.app-logo').addEventListener('click', () => {
-        navigateToSection('dashboardSection');
-      });
-
-      elements.aiIcon.addEventListener('click', () => {
-        elements.aiChatPanel.classList.toggle('open');
-      });
-
-      document.getElementById('aiChatPanel').querySelector('.ai-chat-close').addEventListener('click', () => {
-        elements.aiChatPanel.classList.remove('open');
-      });
-
-      elements.sidebar.addEventListener('click', (event) => {
-        const navItem = event.target.closest('.nav-item');
-        if (navItem) {
-          document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-          navItem.classList.add('active');
-          const targetSectionId = navItem.dataset.target;
-          navigateToSection(targetSectionId);
-          if (window.innerWidth < 1024) { // Close sidebar on mobile
-            document.body.classList.remove('sidebar-open');
-            elements.hamburgerIcon.classList.remove('open');
-          }
-        }
-      });
+      const sec = document.getElementById(sectionId);
+      if (sec) sec.classList.add('active');
     }
-
-    function navigateToSection(sectionId) {
-      document.querySelectorAll('.app-section').forEach(section => {
-        section.classList.remove('active');
-      });
-      document.getElementById(sectionId).classList.add('active');
-
-      document.querySelectorAll('.nav-item').forEach(item => {
-        if (item.dataset.target === sectionId) {
-          item.classList.add('active');
-        } else {
-          item.classList.remove('active');
-        }
-      });
-
-      // Update dashboard stats when navigating to dashboard
-      if (sectionId === 'dashboardSection') {
-        renderDashboard();
-      }
-      // Render relevant content for other sections if needed
-      if (sectionId === 'todoSection') renderToDos();
-      if (sectionId === 'habitSection') renderHabits();
-      if (sectionId === 'journalSection') renderJournalList();
-      if (sectionId === 'notepadSection') renderNotepad();
-      if (sectionId === 'settingsSection') renderSettings();
-    }
-
-    // ============================
-    // Dashboard Module
-    // ============================
-    function renderDashboard() {
-      const pendingTasks = state.todos.filter(task => !task.completed).length;
-      elements.dashboardTasksPending.textContent = pendingTasks;
-
-      const today = new Date().toISOString().split('T')[0];
-      let habitsCompletedToday = 0;
-      let totalHabits = state.habits.length;
-      state.habits.forEach(habit => {
-        if (habit.completion && habit.completion[today]) {
-          habitsCompletedToday++;
-        }
-      });
-      elements.dashboardHabitsToday.textContent = `${habitsCompletedToday}/${totalHabits}`;
-
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      const journalEntriesThisWeek = state.journalEntries.filter(entry => new Date(entry.createdAt) >= sevenDaysAgo).length;
-      elements.dashboardJournalEntries.textContent = journalEntriesThisWeek;
-
-      // Simple study progress for now
-      elements.dashboardStudyProgress.textContent = '0%'; // Placeholder
-
-      // Render Recent To-Dos
-      const recentTodosList = elements.dashboardRecentTodos;
-      recentTodosList.innerHTML = '';
-      if (state.todos.length === 0) {
-        recentTodosList.innerHTML = '<li>No recent tasks.</li>';
+    // Sidebar toggle
+    function toggleNav() {
+      const nav = document.getElementById('sidebar');
+      if (nav.classList.contains('show')) {
+        nav.classList.remove('show');
       } else {
-        const sortedTodos = [...state.todos].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        for (let i = 0; i < Math.min(5, sortedTodos.length); i++) {
-          const task = sortedTodos[i];
-          const li = document.createElement('li');
-          li.style.display = 'flex';
-          li.style.alignItems = 'center';
-          li.style.padding = '8px 0';
-          li.style.borderBottom = '1px solid var(--bg-color)';
-          li.innerHTML = `
-            <input type="checkbox" ${task.completed ? 'checked' : ''} disabled style="margin-right: 10px;">
-            <span style="flex-grow: 1; font-weight: 500;">${task.title}</span>
-            <span class="small-text">${task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No Due Date'}</span>
-          `;
-          recentTodosList.appendChild(li);
-        }
-      }
-
-      // Render Journal Snapshot
-      const journalSnapshotDiv = elements.dashboardJournalSnapshot;
-      journalSnapshotDiv.innerHTML = '';
-      if (state.journalEntries.length > 0) {
-        const lastEntry = state.journalEntries.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
-        const snippet = lastEntry.contentHTML.replace(/<[^>]*>/g, '').substring(0, 100) + (lastEntry.contentHTML.length > 100 ? '...' : '');
-        journalSnapshotDiv.innerHTML = `
-          <h4>${lastEntry.title}</h4>
-          <p class="small-text">${new Date(lastEntry.createdAt).toLocaleDateString()}</p>
-          <p>${snippet}</p>
-        `;
+        nav.classList.add('show');
       }
     }
-
-    // ============================
+    // Toggle AI Assistant panel
+    function toggleAI() {
+      const panel = document.getElementById('ai-panel');
+      panel.classList.toggle('active');
+    }
+    // Handle navigation link clicks
+    document.querySelectorAll('nav ul li a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sectionId = link.getAttribute('data-section');
+        showSection(sectionId);
+        // Hide nav on mobile after clicking
+        if (window.innerWidth <= 768) {
+          document.getElementById('sidebar').classList.remove('show');
+        }
+      });
+    });
     // To-Do List Module
-    // ============================
-    let editingTask = null; // Stores the task object being edited
-
-    function renderToDos() {
-      elements.todoList.innerHTML = '';
-      const fragment = document.createDocumentFragment();
-
-      const filterStatus = document.querySelector('.filter-sort-row button.active')?.dataset.filter || 'all';
-      const sortBy = elements.todoSortBy.value;
-
-      let filteredTodos = [...state.todos];
-
-      if (filterStatus !== 'all') {
-        filteredTodos = filteredTodos.filter(task =>
-          filterStatus === 'completed' ? task.completed : !task.completed
-        );
-      }
-
-      filteredTodos.sort((a, b) => {
-        if (sortBy === 'dueDate') {
-          return (a.dueDate ? new Date(a.dueDate) : Infinity) - (b.dueDate ? new Date(b.dueDate) : Infinity);
-        } else if (sortBy === 'priority') {
-          const priorityOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
-          return priorityOrder[b.priority] - priorityOrder[a.priority];
-        } else if (sortBy === 'createdDate') {
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        }
-        return 0;
-      });
-
-      if (filteredTodos.length === 0) {
-        const li = document.createElement('li');
-        li.textContent = 'No tasks found. Add one!';
-        elements.todoList.appendChild(li);
-        return;
-      }
-
-      filteredTodos.forEach(task => {
-        const li = document.createElement('li');
-        li.classList.add('task-card');
-        if (task.dueDate && !task.completed && new Date(task.dueDate) < new Date()) {
-          li.classList.add('overdue');
-        }
-        li.setAttribute('draggable', true); // Enable drag and drop
-        li.dataset.taskId = task.id;
-
-        const priorityColor = task.priority === 'High' ? '#FF0000' : (task.priority === 'Medium' ? '#FFA500' : '#008000');
-        const descriptionSnippet = task.description ? task.description.substring(0, 50) + (task.description.length > 50 ? '...' : '') : '';
-
-        li.innerHTML = `
-          <input type="checkbox" data-task-id="${task.id}" ${task.completed ? 'checked' : ''} aria-label="Mark task as complete">
-          <div class="task-details">
-            <div class="task-title">${task.title}</div>
-            <div class="small-text">${descriptionSnippet}</div>
-          </div>
-          <span class="priority-dot" style="background-color: ${priorityColor};" aria-label="Priority: ${task.priority}"></span>
-          <span class="task-due-date">${task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No Due Date'}</span>
-          <div class="task-actions">
-            <span class="icon" data-action="edit" data-task-id="${task.id}" aria-label="Edit task">✏️</span>
-            <span class="icon" data-action="delete" data-task-id="${task.id}" aria-label="Delete task">🗑️</span>
-          </div>
-        `;
-        fragment.appendChild(li);
-      });
-      elements.todoList.appendChild(fragment);
-
-      addTodoEventListeners();
+    let todos = [];
+    function loadTodos() {
+      const stored = localStorage.getItem('7k_todos');
+      todos = stored ? JSON.parse(stored) : [];
+      todos.forEach((todo, idx) => renderTodoItem(todo, idx));
+      updateDashboardCounts();
     }
-
-    function addTodoEventListeners() {
-      elements.todoList.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', (e) => toggleTaskCompleted(e.target.dataset.taskId));
-      });
-      elements.todoList.querySelectorAll('.task-actions .icon').forEach(icon => {
-        icon.addEventListener('click', (e) => {
-          const taskId = e.target.dataset.taskId;
-          if (e.target.dataset.action === 'edit') {
-            editTask(taskId);
-          } else if (e.target.dataset.action === 'delete') {
-            deleteTask(taskId);
-          }
-        });
-      });
-
-      // Drag and Drop
-      let dragSrcEl = null;
-      elements.todoList.querySelectorAll('.task-card').forEach(taskCard => {
-        taskCard.addEventListener('dragstart', (e) => {
-          e.target.style.opacity = '0.4';
-          dragSrcEl = e.target;
-          e.dataTransfer.effectAllowed = 'move';
-          e.dataTransfer.setData('text/html', e.target.innerHTML);
-        });
-
-        taskCard.addEventListener('dragover', (e) => {
-          e.preventDefault();
-          e.dataTransfer.dropEffect = 'move';
-          e.target.classList.add('drag-over');
-        });
-
-        taskCard.addEventListener('dragleave', (e) => {
-          e.target.classList.remove('drag-over');
-        });
-
-        taskCard.addEventListener('drop', (e) => {
-          e.stopPropagation();
-          e.target.classList.remove('drag-over');
-          if (dragSrcEl !== e.target) {
-            const dragIndex = Array.from(elements.todoList.children).indexOf(dragSrcEl);
-            const dropIndex = Array.from(elements.todoList.children).indexOf(e.target);
-
-            const [removed] = state.todos.splice(dragIndex, 1);
-            state.todos.splice(dropIndex, 0, removed);
-            saveState();
-            renderToDos();
-          }
-        });
-
-        taskCard.addEventListener('dragend', (e) => {
-          e.target.style.opacity = '1';
-          elements.todoList.querySelectorAll('.task-card').forEach(card => card.classList.remove('drag-over'));
-        });
-      });
+    function saveTodos() {
+      localStorage.setItem('7k_todos', JSON.stringify(todos));
+      updateDashboardCounts();
     }
-
-    function openAddTaskModal(task = null) {
-      elements.taskTitleError.textContent = '';
-      editingTask = task;
-      if (task) {
-        elements.taskModalTitle.textContent = 'Edit Task';
-        elements.taskTitle.value = task.title;
-        elements.taskDescription.value = task.description;
-        elements.taskDueDate.value = task.dueDate;
-        elements.taskPriority.value = task.priority;
-        elements.taskTags.value = task.tags ? task.tags.join(', ') : '';
+    function addTodo() {
+      const input = document.getElementById('newTodo');
+      const text = input.value.trim();
+      if (text === '') return;
+      const todo = { text, done: false };
+      todos.push(todo);
+      renderTodoItem(todo, todos.length - 1);
+      saveTodos();
+      input.value = '';
+    }
+    function renderTodoItem(todo, idx) {
+      const list = document.getElementById('todoList');
+      const item = document.createElement('li');
+      item.className = 'todo-item' + (todo.done ? ' done' : '');
+      // Task text
+      const span = document.createElement('span');
+      span.textContent = todo.text;
+      span.onclick = () => toggleDone(idx, item, span);
+      // Delete button
+      const del = document.createElement('button');
+      del.textContent = '✖';
+      del.style.marginLeft = '10px';
+      del.onclick = () => deleteTodo(idx, item);
+      item.appendChild(span);
+      item.appendChild(del);
+      list.appendChild(item);
+    }
+    function toggleDone(idx, itemElem, textElem) {
+      todos[idx].done = !todos[idx].done;
+      if (todos[idx].done) {
+        itemElem.classList.add('done');
       } else {
-        elements.taskModalTitle.textContent = 'Add New Task';
-        elements.taskForm.reset();
-        elements.taskPriority.value = 'Medium'; // Default
+        itemElem.classList.remove('done');
       }
-      elements.taskModal.classList.add('open');
+      saveTodos();
     }
-
-    function closeTaskModal() {
-      elements.taskModal.classList.remove('open');
-      editingTask = null;
+    function deleteTodo(idx, itemElem) {
+      todos.splice(idx, 1);
+      itemElem.remove();
+      // Re-render list
+      document.getElementById('todoList').innerHTML = '';
+      todos.forEach((todo, i) => renderTodoItem(todo, i));
+      saveTodos();
     }
-
-    elements.taskForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!elements.taskTitle.value.trim()) {
-        elements.taskTitleError.textContent = 'Task title is required.';
-        return;
-      }
-      elements.taskTitleError.textContent = '';
-
-      const newTask = {
-        id: editingTask ? editingTask.id : Date.now(),
-        title: elements.taskTitle.value.trim(),
-        description: elements.taskDescription.value.trim(),
-        dueDate: elements.taskDueDate.value,
-        priority: elements.taskPriority.value,
-        tags: elements.taskTags.value.split(',').map(tag => tag.trim()).filter(tag => tag),
-        completed: editingTask ? editingTask.completed : false,
-        createdAt: editingTask ? editingTask.createdAt : new Date().toISOString()
-      };
-
-      if (editingTask) {
-        const index = state.todos.findIndex(t => t.id === editingTask.id);
-        if (index !== -1) {
-          state.todos[index] = newTask;
-        }
-        showToast('Task updated successfully!', 'success');
-      } else {
-        state.todos.push(newTask);
-        showToast('Task added successfully!', 'success');
-      }
-      saveState();
-      renderToDos();
-      renderDashboard();
-      closeTaskModal();
-    });
-
-    function toggleTaskCompleted(taskId) {
-      const task = state.todos.find(t => t.id == taskId);
-      if (task) {
-        task.completed = !task.completed;
-        saveState();
-        renderToDos();
-        renderDashboard();
-        showToast(`Task marked as ${task.completed ? 'completed' : 'pending'}`, 'success');
-      }
-    }
-
-    function editTask(taskId) {
-      const task = state.todos.find(t => t.id == taskId);
-      if (task) {
-        openAddTaskModal(task);
-      }
-    }
-
-    function deleteTask(taskId) {
-      if (confirm('Are you sure you want to delete this task?')) {
-        state.todos = state.todos.filter(t => t.id != taskId);
-        saveState();
-        renderToDos();
-        renderDashboard();
-        showToast('Task deleted.', 'success');
-      }
-    }
-
-    elements.todoSection.querySelectorAll('.filter-sort-row button').forEach(button => {
-        button.addEventListener('click', (e) => {
-            elements.todoSection.querySelectorAll('.filter-sort-row button').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-            renderToDos();
-        });
-    });
-
-    elements.todoSortBy.addEventListener('change', renderToDos);
-
-    // ============================
     // Habit Tracker Module
-    // ============================
-    let editingHabit = null;
-
-    function renderHabits() {
-      elements.habitList.innerHTML = '';
-      const fragment = document.createDocumentFragment();
-
-      if (state.habits.length === 0) {
-        const li = document.createElement('li');
-        li.textContent = 'No habits yet. Add one!';
-        elements.habitList.appendChild(li);
-        return;
-      }
-
-      const today = new Date().toISOString().split('T')[0];
-
-      state.habits.forEach(habit => {
-        const li = document.createElement('li');
-        li.classList.add('card', 'habit-card');
-        li.dataset.habitId = habit.id;
-
-        const currentStreak = calculateStreak(habit);
-        const isDoneToday = habit.completion && habit.completion[today];
-
-        li.innerHTML = `
-          <div class="habit-card-header">
-            <div>
-              <h3>${habit.title}</h3>
-              <span class="small-text">${habit.frequency === 'Daily' ? 'Daily' : habit.days.join(', ')}</span>
-            </div>
-            <div>
-              <span class="habit-streak">${currentStreak}</span>
-              <span class="small-text">days</span>
-            </div>
-          </div>
-          <div style="display: flex; align-items: center; margin-bottom: 10px;">
-            <input type="checkbox" id="habit-check-${habit.id}" ${isDoneToday ? 'checked' : ''} aria-label="Mark habit done for today">
-            <label for="habit-check-${habit.id}" style="margin-left: 5px;">Mark as done today</label>
-          </div>
-          <div class="mini-calendar" id="calendar-${habit.id}"></div>
-          <div style="text-align: right; margin-top: 10px;">
-            <button class="btn-secondary" data-action="edit" data-habit-id="${habit.id}">Edit</button>
-            <button class="btn-red-outline" data-action="delete" data-habit-id="${habit.id}">Delete</button>
-          </div>
-        `;
-
-        fragment.appendChild(li);
-        renderMiniCalendar(habit, li.querySelector(`#calendar-${habit.id}`));
-      });
-      elements.habitList.appendChild(fragment);
-
-      addHabitEventListeners();
+    let habits = [];
+    function loadHabits() {
+      const stored = localStorage.getItem('7k_habits');
+      habits = stored ? JSON.parse(stored) : [];
+      habits.forEach((habit, idx) => renderHabitItem(habit, idx));
+      updateDashboardCounts();
     }
-
-    function addHabitEventListeners() {
-      elements.habitList.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', (e) => toggleHabitCompletedToday(e.target.id.replace('habit-check-', '')));
-      });
-      elements.habitList.querySelectorAll('.habit-card button').forEach(button => {
-        button.addEventListener('click', (e) => {
-          const habitId = e.target.dataset.habitId;
-          if (e.target.dataset.action === 'edit') {
-            editHabit(habitId);
-          } else if (e.target.dataset.action === 'delete') {
-            deleteHabit(habitId);
-          }
-        });
-      });
+    function saveHabits() {
+      localStorage.setItem('7k_habits', JSON.stringify(habits));
+      updateDashboardCounts();
     }
-
-    function renderMiniCalendar(habit, container) {
-      container.innerHTML = '';
-      const today = new Date();
-      for (let i = 6; i >= 0; i--) { // Last 7 days
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
-        const dateString = date.toISOString().split('T')[0];
-        const dayDiv = document.createElement('div');
-        dayDiv.classList.add('calendar-day');
-        dayDiv.textContent = date.getDate(); // Just day number
-        if (habit.completion && habit.completion[dateString]) {
-          dayDiv.classList.add('completed');
-        } else if (date < today && !(habit.days && !habit.days.includes(date.toLocaleDateString('en-US', { weekday: 'short' })))) { // If past and not completed, and supposed to be done
-            dayDiv.classList.add('missed');
-        }
-        container.appendChild(dayDiv);
-      }
+    function addHabit() {
+      const input = document.getElementById('newHabit');
+      const text = input.value.trim();
+      if (text === '') return;
+      const habit = { text, done: false };
+      habits.push(habit);
+      renderHabitItem(habit, habits.length - 1);
+      saveHabits();
+      input.value = '';
     }
-
-    function calculateStreak(habit) {
-      let streak = 0;
-      let currentDate = new Date();
-      const todayString = currentDate.toISOString().split('T')[0];
-
-      if (!habit.completion) return 0;
-
-      // Check today
-      if (habit.completion[todayString]) {
-        streak = 1;
-        currentDate.setDate(currentDate.getDate() - 1);
-      } else { // If not done today, streak is 0 unless it's a future habit or not relevant for today
-        if (new Date(habit.startDate) > currentDate) return 0; // Future habit
-        const dayOfWeek = currentDate.toLocaleDateString('en-US', { weekday: 'short' });
-        if (habit.frequency === 'Weekly' && !habit.days.includes(dayOfWeek)) {
-            // Not a relevant day, so current day doesn't break streak, check previous relevant day
-            currentDate.setDate(currentDate.getDate() - 1); // Move to previous day
-            while(habit.frequency === 'Weekly' && !habit.days.includes(currentDate.toLocaleDateString('en-US', { weekday: 'short' })) && currentDate >= new Date(habit.startDate)) {
-                currentDate.setDate(currentDate.getDate() - 1);
-            }
-            if (new Date(habit.startDate) > currentDate) return 0; // If start date is after current, means no relevant days before
-        } else {
-            // If it's a relevant day for habit, and it's not done, streak is 0
-            return 0;
-        }
-      }
-
-      // Check past days
-      while (true) {
-        const prevDayString = currentDate.toISOString().split('T')[0];
-        if (new Date(habit.startDate) > currentDate) break; // Before start date
-
-        const dayOfWeek = currentDate.toLocaleDateString('en-US', { weekday: 'short' });
-
-        if (habit.frequency === 'Daily') {
-          if (habit.completion[prevDayString]) {
-            streak++;
-          } else {
-            break; // Streak broken
-          }
-        } else if (habit.frequency === 'Weekly') {
-          if (habit.days.includes(dayOfWeek)) {
-            if (habit.completion[prevDayString]) {
-              streak++;
-            } else {
-              break; // Streak broken
-            }
-          }
-          // If not a habit day, don't break streak, just move to previous day
-        }
-        currentDate.setDate(currentDate.getDate() - 1);
-      }
-      return streak;
+    function renderHabitItem(habit, idx) {
+      const list = document.getElementById('habitList');
+      const item = document.createElement('li');
+      item.className = 'habit-item';
+      const span = document.createElement('span');
+      span.textContent = habit.text;
+      const chk = document.createElement('input');
+      chk.type = 'checkbox';
+      chk.checked = habit.done;
+      chk.onchange = () => toggleHabit(idx, item, span);
+      item.appendChild(span);
+      item.appendChild(chk);
+      list.appendChild(item);
     }
-
-
-    function openAddHabitModal(habit = null) {
-      elements.habitTitleError.textContent = '';
-      editingHabit = habit;
-      if (habit) {
-        elements.habitModalTitle.textContent = 'Edit Habit';
-        elements.habitTitle.value = habit.title;
-        elements.freqDaily.checked = habit.frequency === 'Daily';
-        elements.freqWeekly.checked = habit.frequency === 'Weekly';
-        if (habit.frequency === 'Weekly') {
-            elements.weeklyDays.style.display = 'block';
-            elements.weeklyDays.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                cb.checked = habit.days.includes(cb.value);
-            });
-        } else {
-            elements.weeklyDays.style.display = 'none';
-        }
-        elements.habitReminderTime.value = habit.reminderTime || '';
-        elements.habitStartDate.value = habit.startDate;
+    function toggleHabit(idx, itemElem, textElem) {
+      habits[idx].done = !habits[idx].done;
+      if (habits[idx].done) {
+        itemElem.style.opacity = '0.6';
+        textElem.style.textDecoration = 'line-through';
       } else {
-        elements.habitModalTitle.textContent = 'Add New Habit';
-        elements.habitForm.reset();
-        elements.freqDaily.checked = true;
-        elements.weeklyDays.style.display = 'none';
-        elements.habitStartDate.valueAsDate = new Date();
+        itemElem.style.opacity = '1';
+        textElem.style.textDecoration = 'none';
       }
-      elements.habitModal.classList.add('open');
+      saveHabits();
     }
-
-    function closeHabitModal() {
-      elements.habitModal.classList.remove('open');
-      editingHabit = null;
-    }
-
-    elements.freqDaily.addEventListener('change', () => elements.weeklyDays.style.display = 'none');
-    elements.freqWeekly.addEventListener('change', () => elements.weeklyDays.style.display = 'block');
-
-    elements.habitForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!elements.habitTitle.value.trim()) {
-        elements.habitTitleError.textContent = 'Habit title is required.';
-        return;
-      }
-      elements.habitTitleError.textContent = '';
-
-      const frequency = elements.freqDaily.checked ? 'Daily' : 'Weekly';
-      const days = frequency === 'Weekly'
-        ? Array.from(elements.weeklyDays.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value)
-        : [];
-
-      const newHabit = {
-        id: editingHabit ? editingHabit.id : Date.now(),
-        title: elements.habitTitle.value.trim(),
-        frequency: frequency,
-        days: days,
-        reminderTime: elements.habitReminderTime.value,
-        startDate: elements.habitStartDate.value,
-        completion: editingHabit ? editingHabit.completion : {}, // { 'YYYY-MM-DD': true/false }
-        createdAt: editingHabit ? editingHabit.createdAt : new Date().toISOString()
-      };
-
-      if (editingHabit) {
-        const index = state.habits.findIndex(h => h.id === editingHabit.id);
-        if (index !== -1) {
-          state.habits[index] = newHabit;
-        }
-        showToast('Habit updated successfully!', 'success');
-      } else {
-        state.habits.push(newHabit);
-        showToast('Habit added successfully!', 'success');
-      }
-      saveState();
-      renderHabits();
-      renderDashboard();
-      closeHabitModal();
-    });
-
-    function toggleHabitCompletedToday(habitId) {
-      const habit = state.habits.find(h => h.id == habitId);
-      if (habit) {
-        const today = new Date().toISOString().split('T')[0];
-        if (!habit.completion) habit.completion = {};
-        habit.completion[today] = !habit.completion[today];
-        saveState();
-        renderHabits(); // Re-render to update calendar and streak
-        renderDashboard();
-        showToast(`Habit marked as ${habit.completion[today] ? 'done' : 'not done'} today.`, 'success');
-        if (habit.completion[today]) {
-            // Simple confetti effect
-            const checkbox = document.getElementById(`habit-check-${habitId}`);
-            const rect = checkbox.getBoundingClientRect();
-            for(let i=0; i<10; i++) {
-                const dot = document.createElement('div');
-                dot.style.position = 'fixed';
-                dot.style.width = '5px';
-                dot.style.height = '5px';
-                dot.style.borderRadius = '50%';
-                dot.style.backgroundColor = Math.random() > 0.5 ? '#007BFF' : '#B0B0B0';
-                dot.style.left = `${rect.left + rect.width / 2}px`;
-                dot.style.top = `${rect.top + rect.height / 2}px`;
-                dot.style.opacity = '1';
-                dot.style.transition = 'all 0.8s ease-out';
-                document.body.appendChild(dot);
-
-                const angle = Math.random() * 2 * Math.PI;
-                const distance = Math.random() * 50 + 20;
-                dot.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
-                dot.style.opacity = '0';
-                setTimeout(() => dot.remove(), 800);
-            }
-        }
-      }
-    }
-
-    function editHabit(habitId) {
-      const habit = state.habits.find(h => h.id == habitId);
-      if (habit) {
-        openAddHabitModal(habit);
-      }
-    }
-
-    function deleteHabit(habitId) {
-      if (confirm('Are you sure you want to delete this habit?')) {
-        state.habits = state.habits.filter(h => h.id != habitId);
-        saveState();
-        renderHabits();
-        renderDashboard();
-        showToast('Habit deleted.', 'success');
-      }
-    }
-
-    // ============================
     // Journal Module
-    // ============================
-    let editingJournalEntry = null;
-
-    function renderJournalList() {
-      elements.journalEntriesList.innerHTML = '';
-      const fragment = document.createDocumentFragment();
-
-      const searchQuery = elements.journalSearch.value.toLowerCase();
-      let filteredEntries = state.journalEntries.filter(entry =>
-        entry.title.toLowerCase().includes(searchQuery) ||
-        entry.contentHTML.toLowerCase().includes(searchQuery) ||
-        entry.tags.some(tag => tag.toLowerCase().includes(searchQuery))
-      ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-      if (filteredEntries.length === 0) {
-        elements.journalEntriesList.innerHTML = '<li>No journal entries found.</li>';
-        elements.journalReaderDisplay.innerHTML = '<h3>Select an entry to read.</h3><div id="selected-journal-content"></div>';
-        return;
-      }
-
-      filteredEntries.forEach(entry => {
-        const li = document.createElement('li');
-        li.classList.add('journal-entry-preview');
-        li.dataset.entryId = entry.id;
-        const snippet = entry.contentHTML.replace(/<[^>]*>/g, '').substring(0, 50) + (entry.contentHTML.length > 50 ? '...' : '');
-        li.innerHTML = `
-          <h4>${entry.title.substring(0, 20)}${entry.title.length > 20 ? '...' : ''}</h4>
-          <p class="small-text">${new Date(entry.createdAt).toLocaleDateString()}</p>
-          <p>${snippet}</p>
-        `;
-        li.addEventListener('click', () => displayJournalEntry(entry.id));
-        fragment.appendChild(li);
-      });
-      elements.journalEntriesList.appendChild(fragment);
-
-      // Display the first entry by default if there are entries
-      if (filteredEntries.length > 0) {
-        displayJournalEntry(filteredEntries[0].id);
-      }
+    let journalEntries = [];
+    function loadJournal() {
+      const stored = localStorage.getItem('7k_journal');
+      journalEntries = stored ? JSON.parse(stored) : [];
+      journalEntries.forEach(entry => renderJournalEntry(entry));
     }
-
-    const journalSearchDebounced = debounce(renderJournalList, 300);
-    elements.journalSearch.addEventListener('keyup', journalSearchDebounced);
-
-
-    function openJournalEditor(entry = null) {
-      elements.journalEditorPanel.classList.add('open');
-      editingJournalEntry = entry;
-      if (entry) {
-        elements.journalEditorTitle.textContent = 'Edit Journal Entry';
-        elements.journalEntryTitle.value = entry.title;
-        elements.journalEntryContent.innerHTML = entry.contentHTML;
-        elements.journalEntryTags.value = entry.tags ? entry.tags.join(', ') : '';
-        elements.journalEntryMood.value = entry.mood || '';
-      } else {
-        elements.journalEditorTitle.textContent = 'New Journal Entry';
-        elements.journalEntryTitle.value = '';
-        elements.journalEntryContent.innerHTML = localStorage.getItem(LOCAL_STORAGE_KEYS.JOURNAL_DRAFT) || '';
-        elements.journalEntryTags.value = '';
-        elements.journalEntryMood.value = '';
-      }
-      updateWordAndReadCount();
-      elements.journalEntryContent.focus();
+    function saveJournalEntry(content) {
+      const entry = { content, date: new Date().toLocaleString() };
+      journalEntries.push(entry);
+      localStorage.setItem('7k_journal', JSON.stringify(journalEntries));
     }
-
-    function closeJournalEditor() {
-      elements.journalEditorPanel.classList.remove('open');
-      editingJournalEntry = null;
+    function saveJournal() {
+      const textarea = document.getElementById('journalEntry');
+      const text = textarea.value.trim();
+      if (text === '') return;
+      saveJournalEntry(text);
+      renderJournalEntry(journalEntries[journalEntries.length - 1]);
+      textarea.value = '';
     }
-
-    elements.journalEntryContent.addEventListener('input', debounce(() => {
-        if (elements.journalEntryContent.innerHTML) {
-            localStorage.setItem(LOCAL_STORAGE_KEYS.JOURNAL_DRAFT, elements.journalEntryContent.innerHTML);
-        } else {
-            localStorage.removeItem(LOCAL_STORAGE_KEYS.JOURNAL_DRAFT);
-        }
-        updateWordAndReadCount();
-    }, 1000)); // Autosave draft every 1 second
-
-    function updateWordAndReadCount() {
-      const text = elements.journalEntryContent.textContent || elements.journalEntryContent.innerText;
-      const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
-      const readingTime = Math.ceil(wordCount / 200); // Average reading speed 200 words/min
-      elements.journalWordReadCount.textContent = `Word count: ${wordCount} | Approx. Reading time: ${readingTime} min`;
+    function renderJournalEntry(entry) {
+      const list = document.getElementById('journalList');
+      const item = document.createElement('li');
+      item.className = 'journal-entry';
+      item.innerHTML = '<strong>' + entry.date + ':</strong><p>' + entry.content + '</p>';
+      list.insertBefore(item, list.firstChild);
     }
-
-    function saveJournalEntry() {
-      const title = elements.journalEntryTitle.value.trim();
-      const content = elements.journalEntryContent.innerHTML.trim();
-      const tags = elements.journalEntryTags.value.split(',').map(tag => tag.trim()).filter(tag => tag);
-      const mood = elements.journalEntryMood.value;
-
-      if (!title) {
-        showToast('Journal title is required.', 'error');
-        return;
-      }
-      if (!content) {
-        showToast('Journal content cannot be empty.', 'error');
-        return;
-      }
-
-      const newEntry = {
-        id: editingJournalEntry ? editingJournalEntry.id : Date.now(),
-        title: title,
-        contentHTML: content,
-        tags: tags,
-        mood: mood,
-        createdAt: editingJournalEntry ? editingJournalEntry.createdAt : new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-
-      if (editingJournalEntry) {
-        const index = state.journalEntries.findIndex(e => e.id === editingJournalEntry.id);
-        if (index !== -1) {
-          state.journalEntries[index] = newEntry;
-        }
-        showToast('Journal entry updated!', 'success');
-      } else {
-        state.journalEntries.push(newEntry);
-        showToast('Journal entry saved!', 'success');
-      }
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.JOURNAL_DRAFT);
-      saveState();
-      renderJournalList();
-      renderDashboard();
-      closeJournalEditor();
-    }
-
-    function displayJournalEntry(entryId) {
-      const entry = state.journalEntries.find(e => e.id == entryId);
-      if (entry) {
-        elements.journalReaderDisplay.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3>${entry.title}</h3>
-            <div>
-                <span class="small-text">${new Date(entry.createdAt).toLocaleDateString()}</span>
-                <button class="btn-secondary" style="margin-left: 10px;" onclick="openJournalEditor(${entry.id})">Edit</button>
-                <button class="btn-red-outline" style="margin-left: 5px;" onclick="deleteJournalEntry(${entry.id})">Delete</button>
-            </div>
-          </div>
-          ${entry.mood ? `<p style="margin-bottom: 10px;">Mood: ${entry.mood}</p>` : ''}
-          <div id="selected-journal-content">${entry.contentHTML}</div>
-          ${entry.tags && entry.tags.length > 0 ? `<p class="small-text" style="margin-top: 15px;">Tags: ${entry.tags.join(', ')}</p>` : ''}
-        `;
-      }
-    }
-
-    function deleteJournalEntry(entryId) {
-      if (confirm('Are you sure you want to delete this journal entry?')) {
-        state.journalEntries = state.journalEntries.filter(e => e.id != entryId);
-        saveState();
-        renderJournalList();
-        renderDashboard();
-        showToast('Journal entry deleted.', 'success');
-      }
-    }
-
-    // Basic Rich Text Editor functionality
-    function initRichTextEditor() {
-        // Prevent default behavior for 'contenteditable' div when pressing Enter
-        elements.journalEntryContent.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                document.execCommand('insertHTML', false, '<br><br>');
-            }
-        });
-    }
-
-
-    // ============================
     // Notepad Module
-    // ============================
-    function renderNotepad() {
-      elements.notepadContent.value = state.notepadContent;
-      updateNotepadWordCount();
-      elements.autoSaveToggle.checked = true; // Always start with autosave on for this simple version
+    let notes = [];
+    function loadNotes() {
+      const stored = localStorage.getItem('7k_notes');
+      notes = stored ? JSON.parse(stored) : [];
+      notes.forEach((note, idx) => renderNote(note, idx));
     }
-
-    function updateNotepadWordCount() {
-      const text = elements.notepadContent.value;
-      const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
-      elements.notepadWordCount.textContent = `Word count: ${wordCount}`;
+    function saveNotes() {
+      localStorage.setItem('7k_notes', JSON.stringify(notes));
     }
-
-    const saveNotepadDebounced = debounce(() => {
-        if (elements.autoSaveToggle.checked) {
-            state.notepadContent = elements.notepadContent.value;
-            saveState();
-            elements.savedIndicator.classList.add('show');
-            setTimeout(() => elements.savedIndicator.classList.remove('show'), 1500);
-            updateNotepadWordCount();
-        }
-    }, 2000); // Autosave every 2 seconds
-
-    elements.notepadContent.addEventListener('input', saveNotepadDebounced);
-
-    function saveNotepad() {
-      state.notepadContent = elements.notepadContent.value;
-      saveState();
-      updateNotepadWordCount();
-      showToast('Note saved!', 'success');
+    function saveNote() {
+      const textarea = document.getElementById('noteContent');
+      const text = textarea.value.trim();
+      if (text === '') return;
+      const note = { content: text, date: new Date().toLocaleString() };
+      notes.push(note);
+      renderNote(note, notes.length - 1);
+      saveNotes();
+      textarea.value = '';
     }
-
-    function clearNotepad() {
-      if (confirm('Are you sure you want to clear your note? This cannot be undone.')) {
-        elements.notepadContent.value = '';
-        state.notepadContent = '';
-        saveState();
-        updateNotepadWordCount();
-        showToast('Note cleared.', 'success');
+    function renderNote(note, idx) {
+      const container = document.getElementById('notesListContainer');
+      const item = document.createElement('div');
+      item.className = 'journal-entry'; // reuse style
+      item.innerHTML = '<strong>' + note.date + ':</strong><p>' + note.content + '</p>';
+      container.insertBefore(item, container.firstChild);
+    }
+    // Study Hub Quiz Module
+    const quizQuestions = [
+      {
+        question: "What does CLAT stand for?",
+        options: ["Common Law Admission Test", "Central Law Aptitude Test", "Combined Legal Aptitude Test", "Common Language Admission Test"],
+        answer: 0
+      },
+      {
+        question: "Which subject is included in MHCET?",
+        options: ["Biology", "Legal Reasoning", "Physics", "Polity"],
+        answer: 0
       }
-    }
-
-    function exportNotepad() {
-      const textContent = elements.notepadContent.value;
-      const blob = new Blob([textContent], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `7k_notepad_${Date.now()}.txt`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showToast('Note exported as .txt', 'success');
-    }
-
-    // ============================
-    // Study Hub Module
-    // ============================
-    const studyMaterial = {
-        CLAT: {
-            subjects: {
-                English: [
-                    { name: 'Comprehension', description: 'Reading comprehension skills.' },
-                    { name: 'Vocabulary', description: 'Synonyms, antonyms, idioms.' },
-                    { name: 'Grammar', description: 'Sentence correction, fill in the blanks.' }
-                ],
-                'Logical Reasoning': [
-                    { name: 'Critical Reasoning', description: 'Arguments, inferences.' },
-                    { name: 'Analytical Reasoning', description: 'Puzzles, blood relations.' }
-                ],
-                'Quantitative Techniques': [
-                    { name: 'Number System', description: 'Basic math, percentages.' },
-                    { name: 'Data Interpretation', description: 'Charts, graphs.' }
-                ],
-                'General Knowledge & Current Affairs': [
-                    { name: 'Static GK', description: 'History, Geography, Science.' },
-                    { name: 'Current Affairs', description: 'Recent events, awards.' }
-                ],
-                'Legal Aptitude': [
-                    { name: 'Legal Maxims', description: 'Important legal phrases.' },
-                    { name: 'Indian Constitution', description: 'Basics of Indian law.' }
-                ]
-            },
-            questions: {
-                English: [
-                    { id: 1, type: "mcq", question: "Choose the word most nearly opposite in meaning to 'ABUNDANT'.", options: ["Scarce", "Plentiful", "Rich", "Copious"], correctOptionIndex: 0, difficulty: "Easy", explanation: "Abundant means plentiful, so the opposite is scarce." },
-                    { id: 2, type: "mcq", question: "Identify the part of the sentence with a grammatical error: 'Neither of the two books (A) are available (B) in the library (C) on rent (D).'", options: ["A", "B", "C", "D"], correctOptionIndex: 1, difficulty: "Medium", explanation: "'Neither of' takes a singular verb, so 'is' should be used instead of 'are'." }
-                ],
-                'Logical Reasoning': [
-                    { id: 3, type: "mcq", question: "If 'CAT' is coded as '3120', how is 'DOG' coded?", options: ["4157", "41517", "417", "41520"], correctOptionIndex: 1, difficulty: "Easy", explanation: "Position of letters: C=3, A=1, T=20. So D=4, O=15, G=7. DOG = 4157." }
-                ],
-                'Legal Aptitude': [
-                  { id: 4, type: "mcq", question: "Principle: A person is guilty of theft if he dishonestly takes any movable property out of the possession of any person without that person’s consent. Fact: A finds a watch on the road, not knowing to whom it belongs. He picks it up. Decide.", options: ["A is guilty of theft.", "A is not guilty of theft.", "A should have left the watch there.", "A commits criminal misappropriation."], correctOptionIndex: 1, difficulty: "Hard", explanation: "For theft, there must be a dishonest intention to take property out of someone's possession. Finding property on the road and picking it up without knowing its owner does not immediately constitute theft, as there's no specific person's possession to take it from without consent. It could become criminal misappropriation if he later dishonestly converts it to his own use, but not theft at the point of picking it up."}
-                ]
-            }
-        },
-        MHCET: {
-            subjects: {
-                English: [
-                    { name: 'Vocabulary & Grammar', description: 'Word meanings, sentence structure.' },
-                    { name: 'Reading Comprehension', description: 'Passage analysis.' }
-                ],
-                Mathematics: [
-                    { name: 'Algebra', description: 'Equations, inequalities.' },
-                    { name: 'Geometry', description: 'Shapes, areas.' }
-                ],
-                'Logical & Abstract Reasoning': [
-                    { name: 'Number Series', description: 'Patterns, missing numbers.' },
-                    { name: 'Visual Reasoning', description: 'Figure analysis.' }
-                ],
-                'General Awareness': [
-                    { name: 'Current Affairs', description: 'National and International news.' },
-                    { name: 'General Knowledge', description: 'Science, economics, politics.' }
-                ]
-            },
-            questions: {
-                English: [
-                    { id: 5, type: "mcq", question: "Select the most appropriate synonym for 'ELOQUENT'.", options: ["Fluent", "Stammering", "Quiet", "Hesitant"], correctOptionIndex: 0, difficulty: "Easy", explanation: "Eloquent means fluent or persuasive in speaking or writing." }
-                ],
-                Mathematics: [
-                    { id: 6, type: "mcq", question: "If x + 2 = 5, what is the value of x?", options: ["2", "3", "4", "7"], correctOptionIndex: 1, difficulty: "Easy", explanation: "Subtract 2 from both sides: x = 5 - 2 = 3." }
-                ]
-            }
-        }
-    };
-
-    function initStudyHub() {
-        if (!localStorage.getItem(LOCAL_STORAGE_KEYS.STUDY_QUESTIONS)) {
-            state.studyQuestions = studyMaterial;
-            saveState(); // Save initial question bank
-        }
-
-        elements.studyTabButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                const exam = e.target.dataset.exam;
-                document.querySelectorAll('.study-content-tab').forEach(tab => tab.style.display = 'none');
-                document.getElementById(`${exam.toLowerCase()}Material`).style.display = 'block';
-                elements.studyTabButtons.forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-
-                // Activate first subtab for the new exam
-                const firstSubtabBtn = document.querySelector(`#${exam.toLowerCase()}Material .study-tab-btn[data-subtab]`);
-                if (firstSubtabBtn) {
-                    firstSubtabBtn.click();
-                }
-            });
+    ];
+    let currentQuizIndex = 0;
+    function loadQuizQuestion() {
+      if (currentQuizIndex < quizQuestions.length) {
+        const q = quizQuestions[currentQuizIndex];
+        document.getElementById('quizQuestion').textContent = q.question;
+        const optionsList = document.getElementById('quizOptions');
+        optionsList.innerHTML = '';
+        q.options.forEach((opt, i) => {
+          const li = document.createElement('li');
+          const label = document.createElement('label');
+          const radio = document.createElement('input');
+          radio.type = 'radio';
+          radio.name = 'quiz';
+          radio.value = i;
+          label.appendChild(radio);
+          label.appendChild(document.createTextNode(opt));
+          li.appendChild(label);
+          optionsList.appendChild(li);
         });
-
-        elements.studySubtabButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                const subtab = e.target.dataset.subtab;
-                const parentTab = e.target.closest('.study-content-tab');
-                parentTab.querySelectorAll('.study-subtab-content').forEach(content => content.style.display = 'none');
-                document.getElementById(subtab).style.display = 'block';
-                parentTab.querySelectorAll('.study-tab-btn[data-subtab]').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-
-                // Populate course outline or quiz dashboard
-                if (subtab.includes('course')) {
-                    renderCourseOutline(subtab.replace('course', '').toLowerCase());
-                } else if (subtab.includes('quizzes')) {
-                    renderQuizDashboard(subtab.replace('quizzes', '').toLowerCase());
-                }
-            });
-        });
-
-        // Initialize default tab display
-        const defaultExamTab = document.querySelector('.study-tab-btn.active[data-exam]');
-        if (defaultExamTab) {
-          defaultExamTab.click(); // This will trigger the subtab display as well
-        } else {
-            // Fallback if no active class is set initially
-            elements.studyTabButtons[0].click();
-        }
-    }
-
-    function renderCourseOutline(exam) {
-        const outlineContainer = document.getElementById(`${exam}CourseOutline`);
-        outlineContainer.innerHTML = '';
-        const questionsData = state.studyQuestions[exam.toUpperCase()].subjects;
-
-        for (const subject in questionsData) {
-            const accordionItem = document.createElement('div');
-            accordionItem.classList.add('accordion-item', 'card');
-            accordionItem.innerHTML = `
-                <div class="accordion-header">
-                    <span>${subject}</span>
-                    <span>▶</span>
-                </div>
-                <div class="accordion-content">
-                    <ul>
-                        ${questionsData[subject].map(topic => `
-                            <li>
-                                <strong>${topic.name}</strong>: ${topic.description}
-                                <button class="btn-secondary" style="margin-left: 10px; font-size: 0.8rem;" onclick="startQuiz('${exam.toUpperCase()}', '${subject}')">Quiz Me</button>
-                            </li>
-                        `).join('')}
-                    </ul>
-                </div>
-            `;
-            outlineContainer.appendChild(accordionItem);
-        }
-
-        outlineContainer.querySelectorAll('.accordion-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const content = header.nextElementSibling;
-                const arrow = header.querySelector('span:last-child');
-                if (content.style.display === 'block') {
-                    content.style.display = 'none';
-                    arrow.textContent = '▶';
-                } else {
-                    content.style.display = 'block';
-                    arrow.textContent = '▼';
-                }
-            });
-        });
-    }
-
-    function renderQuizDashboard(exam) {
-        const quizDashboard = document.getElementById(`${exam}QuizDashboard`);
-        quizDashboard.style.display = 'block'; // Show dashboard
-        document.getElementById(`${exam}QuizInterface`).style.display = 'none'; // Hide quiz interface
-        document.getElementById(`${exam}QuizResults`).style.display = 'none'; // Hide quiz results
-
-        const topicSelect = document.getElementById(`${exam}QuizTopic`);
-        topicSelect.innerHTML = '<option value="all">All Topics</option>';
-        for (const subject in state.studyQuestions[exam.toUpperCase()].subjects) {
-            topicSelect.innerHTML += `<option value="${subject}">${subject}</option>`;
-        }
-    }
-
-    function startQuiz(exam, topic = 'all') {
-        state.currentQuiz.exam = exam;
-        state.currentQuiz.topic = topic;
-        state.currentQuiz.questions = [];
-
-        let allQuestions = [];
-        if (topic === 'all') {
-            for (const subject in state.studyQuestions[exam].questions) {
-                allQuestions = allQuestions.concat(state.studyQuestions[exam].questions[subject]);
-            }
-        } else {
-            allQuestions = state.studyQuestions[exam].questions[topic] || [];
-        }
-
-        const difficultyFilters = Array.from(document.querySelectorAll(`#${exam.toLowerCase()}QuizDashboard input[type="checkbox"]:checked`)).map(cb => cb.value);
-        let filteredQuestions = allQuestions;
-        if (difficultyFilters.length > 0) {
-            filteredQuestions = allQuestions.filter(q => difficultyFilters.includes(q.difficulty));
-        }
-
-        const numQuestions = parseInt(document.getElementById(`${exam.toLowerCase()}NumQuestions`).value);
-        // Shuffle and select questions
-        state.currentQuiz.questions = filteredQuestions.sort(() => 0.5 - Math.random()).slice(0, numQuestions);
-        state.currentQuiz.currentIndex = 0;
-        state.currentQuiz.userAnswers = Array(state.currentQuiz.questions.length).fill(null);
-        state.currentQuiz.startTime = new Date();
-
-        if (state.currentQuiz.questions.length === 0) {
-            showToast('No questions found for the selected criteria.', 'error');
-            return;
-        }
-
-        document.getElementById(`${exam.toLowerCase()}QuizDashboard`).style.display = 'none';
-        document.getElementById(`${exam.toLowerCase()}QuizInterface`).style.display = 'block';
-        document.getElementById(`${exam.toLowerCase()}QuizResults`).style.display = 'none';
-
-        startQuizTimer(exam);
-        renderQuizQuestion(exam);
-    }
-
-    function startQuizTimer(exam) {
-        const timerElement = document.getElementById(`${exam.toLowerCase()}QuizTimer`);
-        if (state.currentQuiz.timerInterval) clearInterval(state.currentQuiz.timerInterval);
-
-        state.currentQuiz.timerInterval = setInterval(() => {
-            const elapsedTime = Math.floor((new Date() - state.currentQuiz.startTime) / 1000);
-            const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
-            const seconds = String(elapsedTime % 60).padStart(2, '0');
-            timerElement.textContent = `${minutes}:${seconds}`;
-        }, 1000);
-    }
-
-    function renderQuizQuestion(exam) {
-        const quizInterface = document.getElementById(`${exam.toLowerCase()}QuizInterface`);
-        const currentQuestion = state.currentQuiz.questions[state.currentQuiz.currentIndex];
-
-        if (!currentQuestion) {
-            submitQuiz(exam);
-            return;
-        }
-
-        document.getElementById(`currentQuestionNum${exam === 'MHCET' ? 'MHCET' : ''}`).textContent = state.currentQuiz.currentIndex + 1;
-        document.getElementById(`totalQuestions${exam === 'MHCET' ? 'MHCET' : ''}`).textContent = state.currentQuiz.questions.length;
-        document.getElementById(`quizQuestionText${exam === 'MHCET' ? 'MHCET' : ''}`).textContent = currentQuestion.question;
-
-        const optionsContainer = document.getElementById(`quizOptions${exam === 'MHCET' ? 'MHCET' : ''}`);
-        optionsContainer.innerHTML = '';
-        currentQuestion.options.forEach((option, index) => {
-            const label = document.createElement('label');
-            label.innerHTML = `
-                <input type="radio" name="quizOption" value="${index}" ${state.currentQuiz.userAnswers[state.currentQuiz.currentIndex] === index ? 'checked' : ''}>
-                ${option}
-            `;
-            optionsContainer.appendChild(label);
-        });
-
-        const nextBtn = document.getElementById(`nextQuestionBtn${exam === 'MHCET' ? 'MHCET' : ''}`);
-        const prevBtn = document.getElementById(`prevQuestionBtn${exam === 'MHCET' ? 'MHCET' : ''}`);
-
-        nextBtn.textContent = state.currentQuiz.currentIndex === state.currentQuiz.questions.length - 1 ? 'Submit Quiz' : 'Next';
-        nextBtn.onclick = () => {
-          const selectedOption = quizInterface.querySelector('input[name="quizOption"]:checked');
-          state.currentQuiz.userAnswers[state.currentQuiz.currentIndex] = selectedOption ? parseInt(selectedOption.value) : null;
-          state.currentQuiz.currentIndex++;
-          renderQuizQuestion(exam);
-        };
-
-        prevBtn.style.display = state.currentQuiz.currentIndex > 0 ? 'inline-block' : 'none';
-        prevBtn.onclick = () => {
-          const selectedOption = quizInterface.querySelector('input[name="quizOption"]:checked');
-          state.currentQuiz.userAnswers[state.currentQuiz.currentIndex] = selectedOption ? parseInt(selectedOption.value) : null;
-          state.currentQuiz.currentIndex--;
-          renderQuizQuestion(exam);
-        };
-    }
-
-    function submitQuiz(exam) {
-        if (state.currentQuiz.timerInterval) clearInterval(state.currentQuiz.timerInterval);
-        const endTime = new Date();
-        const timeTaken = Math.floor((endTime - state.currentQuiz.startTime) / 1000);
-
-        let correctCount = 0;
-        const quizResultsList = document.getElementById(`quizResultsList${exam === 'MHCET' ? 'MHCET' : ''}`);
-        quizResultsList.innerHTML = '';
-
-        state.currentQuiz.questions.forEach((question, index) => {
-            const userAnswer = state.currentQuiz.userAnswers[index];
-            const isCorrect = userAnswer === question.correctOptionIndex;
-            if (isCorrect) correctCount++;
-
-            const li = document.createElement('li');
-            li.style.marginBottom = '10px';
-            li.innerHTML = `
-                <p><strong>Q${index + 1}:</strong> ${question.question}</p>
-                <p>Your Answer: <span style="color: ${isCorrect ? 'green' : 'red'};">${userAnswer !== null ? question.options[userAnswer] : 'No Answer'}</span></p>
-                <p>Correct Answer: <span style="color: green;">${question.options[question.correctOptionIndex]}</span></p>
-                ${!isCorrect && question.explanation ? `<p class="small-text">Explanation: ${question.explanation}</p>` : ''}
-            `;
-            quizResultsList.appendChild(li);
-        });
-
-        const scorePercentage = (correctCount / state.currentQuiz.questions.length * 100).toFixed(0);
-        document.getElementById(`quizScore${exam === 'MHCET' ? 'MHCET' : ''}`).textContent = `${correctCount}/${state.currentQuiz.questions.length} (${scorePercentage}%)`;
-        const minutes = String(Math.floor(timeTaken / 60)).padStart(2, '0');
-        const seconds = String(timeTaken % 60).padStart(2, '0');
-        document.getElementById(`quizTimeTaken${exam === 'MHCET' ? 'MHCET' : ''}`).textContent = `${minutes}:${seconds}`;
-
-        // Save quiz history
-        state.quizHistory.push({
-            exam: exam,
-            topic: state.currentQuiz.topic,
-            score: correctCount,
-            totalQuestions: state.currentQuiz.questions.length,
-            percentage: parseFloat(scorePercentage),
-            timeTaken: timeTaken,
-            date: new Date().toISOString()
-        });
-        saveState();
-
-        document.getElementById(`${exam.toLowerCase()}QuizInterface`).style.display = 'none';
-        document.getElementById(`${exam.toLowerCase()}QuizResults`).style.display = 'block';
-    }
-
-    function retryQuiz(exam) {
-        startQuiz(exam, state.currentQuiz.topic); // Re-start with same settings
-    }
-
-    function downloadQuizScorecard(exam) {
-        let content = `Quiz Scorecard - ${exam}\n\n`;
-        content += `Score: ${document.getElementById(`quizScore${exam === 'MHCET' ? 'MHCET' : ''}`).textContent}\n`;
-        content += `Time Taken: ${document.getElementById(`quizTimeTaken${exam === 'MHCET' ? 'MHCET' : ''}`).textContent}\n\n`;
-        content += "--- Your Answers ---\n";
-
-        state.currentQuiz.questions.forEach((question, index) => {
-            const userAnswer = state.currentQuiz.userAnswers[index];
-            const isCorrect = userAnswer === question.correctOptionIndex;
-            content += `\nQ${index + 1}: ${question.question}\n`;
-            content += `Your Answer: ${userAnswer !== null ? question.options[userAnswer] : 'No Answer'} ${isCorrect ? '(Correct)' : '(Incorrect)'}\n`;
-            content += `Correct Answer: ${question.options[question.correctOptionIndex]}\n`;
-            if (!isCorrect && question.explanation) {
-                content += `Explanation: ${question.explanation}\n`;
-            }
-        });
-
-        const blob = new Blob([content], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `7k_quiz_scorecard_${exam}_${Date.now()}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast('Scorecard exported as .txt', 'success');
-    }
-
-    function backToQuizDashboard(exam) {
-        renderQuizDashboard(exam);
-    }
-
-
-    // ============================
-    // AI Integration Module
-    // ============================
-    async function queryAI(promptText) {
-      if (!GEMINI_API_KEY) {
-        showToast('Gemini API Key is not set in settings. Please provide it to use the AI Assistant.', 'error');
-        return "Please set your Gemini API key in the Settings section to use the AI assistant.";
-      }
-
-      const typingIndicator = document.createElement('div');
-      typingIndicator.classList.add('chat-message', 'ai', 'ai-typing-indicator');
-      typingIndicator.innerHTML = 'AI is typing<span>.</span><span>.</span><span>.</span>';
-      elements.aiChatWindow.appendChild(typingIndicator);
-      elements.aiChatWindow.scrollTop = elements.aiChatWindow.scrollHeight; // Scroll to bottom
-
-      try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: promptText }] }]
-          })
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("AI API Error:", errorData);
-          throw new Error(`AI API error: ${errorData.error.message || response.statusText}`);
-        }
-
-        const data = await response.json();
-        const aiResponse = data.candidates[0].content.parts[0].text;
-        return aiResponse;
-
-      } catch (error) {
-        console.error("Error querying AI:", error);
-        return `Sorry, something went wrong: ${error.message}. Please try again or check your API key.`;
-      } finally {
-        typingIndicator.remove(); // Remove typing indicator
-      }
-    }
-
-    async function sendAIChatMessage() {
-      const userMessageText = elements.aiInput.value.trim();
-      if (!userMessageText) return;
-
-      // Add user message to chat window
-      const userMessageDiv = document.createElement('div');
-      userMessageDiv.classList.add('chat-message', 'user');
-      userMessageDiv.innerHTML = `<p>${userMessageText}</p><span class="timestamp">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>`;
-      elements.aiChatWindow.appendChild(userMessageDiv);
-      elements.aiInput.value = '';
-      elements.aiChatWindow.scrollTop = elements.aiChatWindow.scrollHeight;
-
-      // Get AI response
-      const aiReply = await queryAI(userMessageText);
-
-      // Add AI response to chat window
-      const aiMessageDiv = document.createElement('div');
-      aiMessageDiv.classList.add('chat-message', 'ai');
-      aiMessageDiv.innerHTML = `<p>${aiReply}</p><span class="timestamp">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>`;
-      elements.aiChatWindow.appendChild(aiMessageDiv);
-      elements.aiChatWindow.scrollTop = elements.aiChatWindow.scrollHeight;
-    }
-
-    elements.aiInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        sendAIChatMessage();
-      }
-    });
-
-
-    // ============================
-    // Settings Module
-    // ============================
-    function renderSettings() {
-      elements.usernameInput.value = state.settings.username;
-      elements.themeSelect.value = state.settings.theme;
-      elements.fontSizeSelect.value = state.settings.fontSize;
-      elements.todoRemindersToggle.checked = state.settings.notifications.todo;
-      elements.habitRemindersToggle.checked = state.settings.notifications.habit;
-      elements.quizRemindersToggle.checked = state.settings.notifications.quiz;
-      elements.aiApiKeyInput.value = state.settings.apiKey;
-      elements.aiModelSelect.value = state.settings.aiModel;
-
-      // Populate timezone options
-      if (elements.timezoneSelect.options.length === 0) {
-        const timezones = Intl.supportedValuesOf('timeZone');
-        timezones.forEach(tz => {
-          const option = document.createElement('option');
-          option.value = tz;
-          option.textContent = tz;
-          elements.timezoneSelect.appendChild(option);
-        });
-      }
-      elements.timezoneSelect.value = state.settings.timezone;
-    }
-
-    elements.usernameInput.addEventListener('input', debounce(() => {
-        state.settings.username = elements.usernameInput.value;
-        saveState();
-    }, 500));
-
-    elements.themeSelect.addEventListener('change', (e) => {
-      state.settings.theme = e.target.value;
-      applyTheme(state.settings.theme);
-      saveState();
-    });
-
-    elements.fontSizeSelect.addEventListener('change', (e) => {
-      state.settings.fontSize = e.target.value;
-      applyFontSize(state.settings.fontSize);
-      saveState();
-    });
-
-    elements.todoRemindersToggle.addEventListener('change', (e) => {
-      state.settings.notifications.todo = e.target.checked;
-      saveState();
-    });
-    elements.habitRemindersToggle.addEventListener('change', (e) => {
-      state.settings.notifications.habit = e.target.checked;
-      saveState();
-    });
-    elements.quizRemindersToggle.addEventListener('change', (e) => {
-      state.settings.notifications.quiz = e.target.checked;
-      saveState();
-    });
-    elements.timezoneSelect.addEventListener('change', (e) => {
-      state.settings.timezone = e.target.value;
-      saveState();
-    });
-
-    elements.aiApiKeyInput.addEventListener('input', debounce(() => {
-        state.settings.apiKey = elements.aiApiKeyInput.value;
-        saveState();
-    }, 500));
-    elements.aiModelSelect.addEventListener('change', (e) => {
-      state.settings.aiModel = e.target.value;
-      saveState();
-    });
-
-    function toggleApiKeyVisibility() {
-      if (elements.aiApiKeyInput.type === "password") {
-        elements.aiApiKeyInput.type = "text";
-        elements.aiApiKeyInput.nextElementSibling.textContent = "Hide";
+        document.getElementById('quizResult').textContent = '';
       } else {
-        elements.aiApiKeyInput.type = "password";
-        elements.aiApiKeyInput.nextElementSibling.textContent = "Show";
+        document.getElementById('quizQuestion').textContent = 'Quiz Completed!';
+        document.getElementById('quizOptions').innerHTML = '';
+        document.getElementById('quizResult').textContent = '';
       }
     }
-
-    function clearAllData() {
-      if (confirm('Are you sure you want to clear ALL app data? This cannot be undone.')) {
-        localStorage.clear();
-        state = { // Reset state to initial empty values
-          todos: [],
-          habits: [],
-          journalEntries: [],
-          notepadContent: '',
-          studyQuestions: {},
-          quizHistory: [],
-          settings: {
-            theme: 'light',
-            apiKey: '',
-            aiModel: 'gemini-pro',
-            username: '',
-            fontSize: 'medium',
-            notifications: { todo: true, habit: true, quiz: true },
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
-          }
-        };
-        saveState(); // Save empty state
-        initApp(); // Re-initialize UI
-        showToast('All app data cleared!', 'success');
+    function submitQuiz() {
+      const radios = document.getElementsByName('quiz');
+      let selected = null;
+      radios.forEach(r => { if (r.checked) selected = parseInt(r.value); });
+      if (selected === null) return;
+      const q = quizQuestions[currentQuizIndex];
+      const resultDiv = document.getElementById('quizResult');
+      if (selected === q.answer) {
+        resultDiv.textContent = 'Correct!';
+      } else {
+        resultDiv.textContent = 'Incorrect! Correct answer: ' + q.options[q.answer];
       }
     }
-
-    function exportAllData() {
-      const fullData = {
-        todos: state.todos,
-        habits: state.habits,
-        journalEntries: state.journalEntries,
-        notepadContent: state.notepadContent,
-        studyQuestions: state.studyQuestions,
-        quizHistory: state.quizHistory,
-        settings: state.settings,
+    function nextQuizQuestion() {
+      if (currentQuizIndex < quizQuestions.length - 1) {
+        currentQuizIndex++;
+        loadQuizQuestion();
+      }
+    }
+    // AI Assistant (placeholder)
+    function processAI() {
+      const input = document.getElementById('aiInput').value.trim();
+      const responseDiv = document.getElementById('aiResponse');
+      if (input === '') return;
+      // Placeholder: just echoes input for now
+      responseDiv.textContent = 'AI Assistant response: ' + input;
+      document.getElementById('aiInput').value = '';
+    }
+    // Theme and Settings
+    function loadTheme() {
+      const dark = localStorage.getItem('7k_darkMode') === 'true';
+      document.body.classList.toggle('dark-mode', dark);
+      document.getElementById('themeSwitch').checked = dark;
+    }
+    function toggleTheme() {
+      const isDark = document.body.classList.toggle('dark-mode');
+      document.getElementById('themeSwitch').checked = isDark;
+      localStorage.setItem('7k_darkMode', isDark);
+    }
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+    document.getElementById('themeSwitch').addEventListener('change', toggleTheme);
+    // Export and Import Data
+    function exportData() {
+      const data = {
+        todos,
+        habits,
+        journalEntries,
+        notes,
+        darkMode: document.body.classList.contains('dark-mode')
       };
-      const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `7k_life_data_${Date.now()}.json`;
-      document.body.appendChild(a);
+      a.download = '7k_life_data.json';
       a.click();
-      document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('All data exported!', 'success');
     }
-
-    elements.importDataInput.addEventListener('change', (event) => {
+    function importData(event) {
       const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          try {
-            const importedData = JSON.parse(e.target.result);
-            // Basic schema validation
-            if (importedData.todos && importedData.habits && importedData.journalEntries &&
-                importedData.notepadContent !== undefined && importedData.studyQuestions &&
-                importedData.quizHistory && importedData.settings) {
-              if (confirm('Importing data will overwrite your current data. Are you sure?')) {
-                state.todos = importedData.todos;
-                state.habits = importedData.habits;
-                state.journalEntries = importedData.journalEntries;
-                state.notepadContent = importedData.notepadContent;
-                state.studyQuestions = importedData.studyQuestions;
-                state.quizHistory = importedData.quizHistory;
-                state.settings = { ...state.settings, ...importedData.settings }; // Merge settings
-
-                saveState();
-                initApp(); // Re-initialize UI with imported data
-                showToast('Data imported successfully!', 'success');
-              }
-            } else {
-              showToast('Invalid data file. Please ensure it\'s a valid 7K Life data export.', 'error');
-            }
-          } catch (error) {
-            console.error('Error parsing imported data:', error);
-            showToast('Error reading data file. Please ensure it\'s a valid JSON.', 'error');
-          } finally {
-              event.target.value = ''; // Clear file input
-          }
-        };
-        reader.readAsText(file);
-      }
-    });
-
-    // ============================
-    // Initialization
-    // ============================
-    function initApp() {
-      loadState();
-      initNavigation();
-      initRichTextEditor();
-      renderDashboard();
-      renderToDos(); // Render initial state for each module
-      renderHabits();
-      renderJournalList();
-      renderNotepad();
-      initStudyHub();
-      renderSettings(); // Render settings UI
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          // Load data
+          todos = data.todos || [];
+          habits = data.habits || [];
+          journalEntries = data.journalEntries || [];
+          notes = data.notes || [];
+          localStorage.setItem('7k_todos', JSON.stringify(todos));
+          localStorage.setItem('7k_habits', JSON.stringify(habits));
+          localStorage.setItem('7k_journal', JSON.stringify(journalEntries));
+          localStorage.setItem('7k_notes', JSON.stringify(notes));
+          localStorage.setItem('7k_darkMode', data.darkMode ? 'true' : 'false');
+          // Refresh UI
+          document.getElementById('todoList').innerHTML = '';
+          document.getElementById('habitList').innerHTML = '';
+          document.getElementById('journalList').innerHTML = '';
+          document.getElementById('notesListContainer').innerHTML = '';
+          loadTodos();
+          loadHabits();
+          loadJournal();
+          loadNotes();
+          loadTheme();
+        } catch(err) {
+          alert('Invalid data file.');
+        }
+      };
+      reader.readAsText(file);
     }
-
-    document.addEventListener('DOMContentLoaded', initApp);
+    document.getElementById('importFile').addEventListener('change', importData);
+    // Update Dashboard counts
+    function updateDashboardCounts() {
+      document.getElementById('dashboardTodoCount').textContent = todos.length;
+      document.getElementById('dashboardHabitCount').textContent = habits.length;
+    }
+    // Initialize on load
+    window.addEventListener('load', () => {
+      loadTodos();
+      loadHabits();
+      loadJournal();
+      loadNotes();
+      loadTheme();
+      loadQuizQuestion();
+    });
   </script>
 </body>
-</html>
+  </html>
